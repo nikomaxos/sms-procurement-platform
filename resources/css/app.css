@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === UI polish (readability, spacing) === */
+@layer base {
+  body { @apply bg-gray-50 text-gray-900; }
+  a { @apply text-blue-700 hover:text-blue-900; }
+}
+
+@layer components {
+  .card { @apply bg-white border border-gray-200 rounded-2xl shadow-sm p-6; }
+  .section-title { @apply text-xl font-semibold text-gray-900; }
+  .section-subtitle { @apply text-sm text-gray-500; }
+  .category { @apply card mb-6; }
+  .category h3 { @apply text-lg font-semibold text-gray-800 mb-1; }
+  .category p { @apply text-sm text-gray-500 mb-4; }
+  .table { @apply min-w-full text-sm; }
+  .btn { @apply inline-flex items-center px-3 py-2 rounded-md font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50; }
+  .btn-primary { @apply inline-flex items-center px-3 py-2 rounded-md font-semibold bg-blue-600 text-white hover:bg-blue-700; }
+  .input { @apply rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500; }
+}
+/* === UI polish (readability, spacing) === */
+@layer base { body { @apply bg-gray-50 text-gray-900; } a { @apply text-blue-700 hover:text-blue-900; } }
+@layer components {
+  .card { @apply bg-white border border-gray-200 rounded-2xl shadow-sm p-6; }
+  .section-title { @apply text-xl font-semibold text-gray-900; }
+  .section-subtitle { @apply text-sm text-gray-500; }
+  .category { @apply card mb-6; }
+  .category h3 { @apply text-lg font-semibold text-gray-800 mb-1; }
+  .category p { @apply text-sm text-gray-500 mb-4; }
+  .table { @apply min-w-full text-sm; }
+  .btn { @apply inline-flex items-center px-3 py-2 rounded-md font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50; }
+  .btn-primary { @apply inline-flex items-center px-3 py-2 rounded-md font-semibold bg-blue-600 text-white hover:bg-blue-700; }
+  .input { @apply rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500; }
+  .tabs .tab { @apply inline-flex items-center px-3 py-1.5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50; }
+  .tabs .tab-active { @apply inline-flex items-center px-3 py-1.5 rounded-full border border-blue-600 bg-blue-600 text-white; }
+  .breadcrumb { @apply text-sm text-gray-500; }
+}

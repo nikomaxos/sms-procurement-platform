@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: sms-platform-postgres
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app -h localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: sms-platform-app
+    working_dir: /var/www/html
+    environment:
+      # Laravel reads .env inside the container; we bind-mount it below
+      PHP_MEMORY_LIMIT: 512M
+    volumes:
+      - ./:/var/www/html
+      - ./.env.docker:/var/www/html/.env:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+    container_name: sms-platform-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+    volumes:
+      - ./:/var/www/html:ro
+
+  node:
+    image: node:20-alpine
+    container_name: sms-platform-node
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    command: sh -lc "npm ci && npm run build && tail -f /dev/null"
+
+volumes:
+  pgdata:

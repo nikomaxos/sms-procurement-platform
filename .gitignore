@@ -1,0 +1,8 @@
+/vendor/
+/node_modules/
+/storage/*.key
+/.idea/
+/.vscode/
+/public/build/
+/backup_*.tgz
+/.backup_before_*
