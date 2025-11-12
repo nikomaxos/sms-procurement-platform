@@ -1,31 +1,22 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="section-title">{{ __('Settings') }}</h2>
-        <p class="section-subtitle">{{ __('Administration & configuration') }}</p>
-    </x-slot>
+  <x-slot name="header">
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Settings</h2>
+  </x-slot>
 
-    <nav class="breadcrumb mb-4 text-sm text-gray-500">
-        <span class="text-gray-700">{{ __('Settings') }}</span>
-    </nav>
-
-    <div class="tabs mb-6 flex gap-2">
-        <a href="{{ route('settings.users.index') }}" class="{{ request()->routeIs('settings.users.*') ? 'tab-active' : 'tab' }}">{{ __('Users') }}</a>
-        <a href="{{ route('settings.dropdowns.index') }}" class="{{ request()->routeIs('settings.dropdowns.*') ? 'tab-active' : 'tab' }}">{{ __('Drop-down menus') }}</a>
-        <a href="{{ route('settings.logs.index') }}" class="{{ request()->routeIs('settings.logs.*') ? 'tab-active' : 'tab' }}">{{ __('Auth Logs') }}</a>
+  <div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <a href="{{ route('settings.dropdowns.index') }}" class="block rounded-lg border p-6 bg-white hover:bg-gray-50">
+        <div class="text-lg font-semibold">Drop Down Menus</div>
+        <div class="text-gray-500 text-sm mt-1">Manage option lists used across the app.</div>
+      </a>
+      <a href="{{ route('settings.imap.edit') }}" class="block rounded-lg border p-6 bg-white hover:bg-gray-50">
+        <div class="text-lg font-semibold">IMAP Settings</div>
+        <div class="text-gray-500 text-sm mt-1">Configure mailbox polling (minutes) and folders.</div>
+      </a>
+      <a href="{{ route('settings.users.index') }}" class="block rounded-lg border p-6 bg-white hover:bg-gray-50">
+        <div class="text-lg font-semibold">Users Management</div>
+        <div class="text-gray-500 text-sm mt-1">List users (read-only stub; enhance later).</div>
+      </a>
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <a href="{{ route('settings.users.index') }}" class="card hover:shadow transition">
-            <h3 class="text-lg font-semibold">{{ __('User Management') }}</h3>
-            <p class="text-gray-500 mt-1">{{ __('Create, edit and remove users; grant admin.') }}</p>
-        </a>
-        <a href="{{ route('settings.dropdowns.index') }}" class="card hover:shadow transition">
-            <h3 class="text-lg font-semibold">{{ __('Drop-down menus') }}</h3>
-            <p class="text-gray-500 mt-1">{{ __('Route Type, Known Hops, Charge Model') }}</p>
-        </a>
-        <a href="{{ route('settings.logs.index') }}" class="card hover:shadow transition">
-            <h3 class="text-lg font-semibold">{{ __('Authentication Logs') }}</h3>
-            <p class="text-gray-500 mt-1">{{ __('Recent sign-ins and sign-outs') }}</p>
-        </a>
-    </div>
+  </div>
 </x-app-layout>

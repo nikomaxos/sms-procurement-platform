@@ -1,0 +1,65 @@
+<?php
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+
+Route::get('/', function () { return view('welcome'); });
+
+Route::middleware(['auth'])->group(function () {
+    // Dashboard
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
+
+    // Profile (Breeze)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ===== Settings (admin only) =====
+    Route::middleware('can:admin')->prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Settings\SettingsController::class, 'index'])->name('index');
+
+        // Users
+        Route::resource('users', \App\Http\Controllers\Settings\UserController::class)->except(['show']);
+
+        // Drop-down menus (single index + per-type CRUD)
+        Route::get('dropdowns', [\App\Http\Controllers\Settings\RouteTypeController::class, 'index'])->name('dropdowns.index');
+        Route::resource('route-types', \App\Http\Controllers\Settings\RouteTypeController::class)->only(['store','update','destroy']);
+        Route::resource('known-hops', \App\Http\Controllers\Settings\KnownHopController::class)->only(['store','update','destroy']);
+        Route::resource('charge-models', \App\Http\Controllers\Settings\ChargeModelController::class)->only(['store','update','destroy']);
+
+        // Auth logs
+        Route::get('logs', [\App\Http\Controllers\Settings\AuthLogController::class, 'index'])->name('logs.index');
+    });
+});
+
+require __DIR__.'/auth.php';
+
+// <= SETTINGS MENU ROUTES
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserManagementController;
+// [Inference] If these exist in your app already, these 'use' lines are harmless.
+use App\Http\Controllers\ImapSettingsController;
+use App\Http\Controllers\DropDownController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+
+    // Subpages (ensure controllers exist or add stubs later)
+    Route::get('/settings/dropdowns', [DropDownController::class, 'index'])->name('settings.dropdowns.index');
+    Route::get('/settings/imap', [ImapSettingsController::class, 'edit'])->name('settings.imap.edit');
+    Route::get('/settings/users', [UserManagementController::class, 'index'])->name('settings.users.index');
+});
+// === SETTINGS ROUTES START ===
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\ImapSettingsController;
+use App\Http\Controllers\DropDownController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::get('/settings/dropdowns', [DropDownController::class, 'index'])->name('settings.dropdowns.index');
+    Route::get('/settings/imap', [ImapSettingsController::class, 'edit'])->name('settings.imap.edit');
+    Route::get('/settings/users', [UserManagementController::class, 'index'])->name('settings.users.index');
+});
+// === SETTINGS ROUTES END ===
