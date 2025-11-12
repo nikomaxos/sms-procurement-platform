@@ -1,0 +1,20 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void {
+        if (!Schema::hasTable('dropdown_items')) {
+            Schema::create('dropdown_items', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('dropdown_menu_id')->constrained('dropdown_menus')->cascadeOnDelete();
+                $table->string('label', 255);
+                $table->timestamps();
+            });
+        }
+    }
+    public function down(): void {
+        Schema::dropIfExists('dropdown_items');
+    }
+};

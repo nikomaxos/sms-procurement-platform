@@ -80,8 +80,3 @@ Route::middleware(['auth'])->prefix('settings/dropdowns')->name('settings.dropdo
     Route::put('/{menu}/items/{item}', [\App\Http\Controllers\Settings\DropdownItemController::class, 'update'])->name('items.update');
     Route::delete('/{menu}/items/{item}', [\App\Http\Controllers\Settings\DropdownItemController::class, 'destroy'])->name('items.destroy');
 });
-
-Route::post(
-  '/settings/dropdowns/{menu}/items/reorder',
-  [\App\Http\Controllers\Settings\DropdownItemController::class, 'reorder']
-)->middleware('auth')->name('settings.dropdowns.items.reorder');
