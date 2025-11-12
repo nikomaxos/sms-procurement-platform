@@ -12,14 +12,15 @@ Route::get('/', function () {
 
 // Authenticated area
 Route::middleware(['auth'])->group(function () {
-    // Dashboard
+    // Dashboard (keep for safety)
     Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
 
     // Settings hub + subpages
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::get('/settings/dropdowns', [DropDownController::class, 'index'])->name('settings.dropdowns.index');
     Route::get('/settings/imap', [ImapSettingsController::class, 'edit'])->name('settings.imap.edit');
 
-    // Profile management (if Breeze profile controller exists)
+    // Profile management if controller exists
     if (class_exists(ProfileController::class)) {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -39,9 +40,9 @@ Route::middleware('auth')->group(function () {
         ->name('password.change.update');
 });
 
-// Users Management (admin-only via controller middleware implemented in controller)
+// Users Management (admin-only via controller middleware)
 Route::middleware(['auth'])->prefix('settings')->name('settings.')->group(function () {
     Route::resource('users', \App\Http\Controllers\Settings\UsersManagementController::class)
-        ->except(['show'])
-        ->names('users');
+         ->except(['show'])
+         ->names('users');
 });

@@ -16,6 +16,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
 
     // Settings hub + subpages
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::get('/settings/dropdowns', [DropDownController::class, 'index'])->name('settings.dropdowns.index');
     Route::get('/settings/imap', [ImapSettingsController::class, 'edit'])->name('settings.imap.edit');
 

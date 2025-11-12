@@ -1,63 +1,54 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
+trap 'echo "ERROR line $LINENO: $BASH_COMMAND" >&2' ERR
 
-REPO_DIR="${HOME}/sms-procurement-platform"
-REMOTE="origin"
-DEFAULT_URL="https://github.com/nikomaxos/sms-procurement-platform.git"  # [Inference]
+root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+cd "$root"
 
-cd "$REPO_DIR"
-
-# Ensure git repo & remote
-if [ ! -d .git ]; then
-  git init
-  git remote add "$REMOTE" "$DEFAULT_URL" || true
-fi
-
-# Protect secrets / heavy dirs
-touch .gitignore
-ensure_ignored() { local p="$1"; grep -qxF "$p" .gitignore || echo "$p" >> .gitignore; }
-ensure_ignored "/.env"
-ensure_ignored "/.env.*"
-ensure_ignored "/vendor/"
-ensure_ignored "/node_modules/"
-ensure_ignored "/storage/*.sqlite"
-ensure_ignored "/public/storage"
-
-# Untrack if mistakenly committed before
-git rm -r --cached --ignore-unmatch .env .env.* vendor node_modules storage/*.sqlite public/storage 2>/dev/null || true
-
-# Stage & commit
-git add -A
 branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo main)"
-if [ "$branch" = "HEAD" ] || [ -z "$branch" ]; then
-  branch="main"
-  git checkout -B "$branch"
-fi
-stamp="$(date +%F_%H-%M-%S)"
-msg="Chore: fresh bootstrap & login fix — APP_KEY set, caches refreshed [${stamp}]"
+remote_url="$(git config --get remote.origin.url || true)"
 
+echo "==> Repo: $root"
+echo "==> Branch: $branch"
+[ -n "$remote_url" ] && echo "==> Remote: $remote_url"
+
+# Safety: never push a tracked .env by mistake
+if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+  echo "Refusing to push: '.env' is tracked. Untrack it first:" >&2
+  echo "  git rm --cached .env && echo '/.env' >> .gitignore && git add .gitignore" >&2
+  exit 1
+fi
+
+echo "==> Status (pre-commit):"
+git status --porcelain=v1
+
+# Stage everything that isn't ignored
+git add -A
+
+# Create commit only if there are staged changes
 if git diff --cached --quiet; then
-  echo "==> No changes to commit."
+  echo "==> Nothing to commit."
+  msg=""
 else
+  msg="${MSG:-"Chore: remove settings hub & UI fixes [$(date +%F_%H-%M-%S)]"}"
   git commit -m "$msg"
 fi
 
-# Ensure remote set
-if ! git remote get-url "$REMOTE" >/dev/null 2>&1; then
-  git remote add "$REMOTE" "$DEFAULT_URL"
+# Rebase on remote branch (best effort)
+git pull --rebase origin "$branch" || true
+
+# Push branch
+git push origin "$branch"
+
+# Optional tag: pass TAG=1 to enable, or TAG=v1.2.3 for custom
+if [ -n "${TAG:-}" ]; then
+  tag_val="${TAG}"
+  if [ "$TAG" = "1" ]; then
+    tag_val="v$(date +%Y%m%d-%H%M)"
+  fi
+  git tag -a "$tag_val" -m "${msg:-"snapshot $(date)"}" || true
+  git push origin "$tag_val" || true
+  echo "==> Pushed tag: $tag_val"
 fi
 
-# Push with rebase fallback
-set +e
-git rev-parse --abbrev-ref --symbolic-full-name "@{u}" >/dev/null 2>&1
-has_upstream=$?
-set -e
-
-if [ $has_upstream -ne 0 ]; then
-  git push -u "$REMOTE" "$branch" || { git pull --rebase "$REMOTE" "$branch" || true; git push -u "$REMOTE" "$branch"; }
-else
-  git pull --rebase "$REMOTE" "$branch" || true
-  git push "$REMOTE" "$branch"
-fi
-
-echo "==> Pushed '$branch' to $(git remote get-url "$REMOTE")"
+echo "==> Done. Pushed '$branch' to $(git config --get remote.origin.url)"
