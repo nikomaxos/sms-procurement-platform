@@ -33,3 +33,11 @@ Route::middleware(['auth'])->group(function () {
 if (file_exists(__DIR__.'/auth.php')) {
     require __DIR__.'/auth.php';
 }
+
+// Change Password (auth)
+Route::middleware('auth')->group(function () {
+    Route::get('/password/change', [\App\Http\Controllers\Auth\PasswordChangeController::class, 'edit'])
+        ->name('password.change');
+    Route::put('/password/change', [\App\Http\Controllers\Auth\PasswordChangeController::class, 'update'])
+        ->name('password.change.update');
+});
