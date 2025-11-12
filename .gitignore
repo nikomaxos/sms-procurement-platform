@@ -12,3 +12,7 @@
 !.env.example
 /.env.docker
 /.env.bak.*
+storage/_legacy/
+routes/*.bak.*
+database/migrations/_bak/
+/public/hot

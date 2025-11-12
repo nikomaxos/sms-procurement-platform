@@ -85,3 +85,29 @@ Route::post(
   '/settings/dropdowns/{menu}/items/reorder',
   [\App\Http\Controllers\Settings\DropdownItemController::class, 'reorder']
 )->middleware('auth')->name('settings.dropdowns.items.reorder');
+
+
+Route::middleware(["auth"])->group(function () {
+    Route::get("/settings/imap", [\App\Http\Controllers\ImapSettingsController::class, "edit"])->name("settings.imap.edit");
+    Route::put("/settings/imap", [\App\Http\Controllers\ImapSettingsController::class, "update"])->name("settings.imap.update");
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::put('/settings/imap', [\App\Http\Controllers\ImapSettingsController::class, 'update'])->name('settings.imap.update');
+});
+
+Route::middleware(['auth'])->group(function () {
+});
+
+Route::middleware(['auth'])->group(function () {
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Save (PUT remains as-is elsewhere)
+    // Test & Fetch: allow POST or PUT so they work from the single form with _method=PUT
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::match(['POST','PUT'], '/settings/imap/test',  [\App\Http\Controllers\ImapSettingsController::class, 'test'])->name('settings.imap.test');
+    Route::match(['POST','PUT'], '/settings/imap/fetch', [\App\Http\Controllers\ImapSettingsController::class, 'fetchFolders'])->name('settings.imap.fetch');
+});

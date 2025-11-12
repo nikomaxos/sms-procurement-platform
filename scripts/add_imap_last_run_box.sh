@@ -1,3 +1,73 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+# docker compose alias
+if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
+root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"; cd "$root"
+
+TS="$(date +%Y_%m_%d_%H%M%S)"
+
+############################################
+# 1) Migration: add last_run_at to settings
+############################################
+mkdir -p database/migrations
+cat > "database/migrations/${TS}_add_last_run_at_to_imap_settings.php" <<'PHP'
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void {
+        if (Schema::hasTable('imap_settings') && !Schema::hasColumn('imap_settings','last_run_at')) {
+            Schema::table('imap_settings', function (Blueprint $table) {
+                $table->timestamp('last_run_at')->nullable()->after('last_test_log');
+            });
+        }
+    }
+    public function down(): void {
+        if (Schema::hasTable('imap_settings') && Schema::hasColumn('imap_settings','last_run_at')) {
+            Schema::table('imap_settings', function (Blueprint $table) {
+                $table->dropColumn('last_run_at');
+            });
+        }
+    }
+};
+PHP
+
+############################################
+# 2) Ensure model casts last_run_at
+############################################
+mkdir -p app/Models
+cat > app/Models/ImapSetting.php <<'PHP'
+<?php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ImapSetting extends Model {
+    protected $table = 'imap_settings';
+    protected $guarded = [];
+    protected $casts = [
+        'enabled'            => 'bool',
+        'selected_folders'   => 'array',
+        'last_folders_cache' => 'array',
+        'last_run_at'        => 'datetime',
+    ];
+    public static function singleton(): self {
+        $m = static::find(1);
+        if (!$m) { $m = new static(); $m->id = 1; $m->poll_minutes = 5; $m->save(); }
+        return $m;
+    }
+}
+PHP
+
+############################################
+# 3) Update Blade: show small "Last run" box
+############################################
+VIEW="resources/views/settings/imap/edit.blade.php"
+mkdir -p "$(dirname "$VIEW")"
+cat > "$VIEW" <<'BLADE'
 <x-app-layout>
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">IMAP Settings</h2>
@@ -137,3 +207,18 @@
     </form>
   </div>
 </x-app-layout>
+BLADE
+
+############################################
+# 4) Migrate & rebuild caches; fix perms
+############################################
+$DC exec -T app bash -lc '
+  set -e
+  php artisan migrate --force
+  php artisan optimize:clear || true
+  php artisan view:clear || true
+  php artisan view:cache || true
+  php artisan route:cache || true
+  chown -R www-data:www-data storage bootstrap/cache || true
+'
+echo "==> Done. Reload /settings/imap. When Enabled is ticked, the Last run box is shown (— until the poller sets it)."

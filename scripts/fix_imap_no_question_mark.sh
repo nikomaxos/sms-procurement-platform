@@ -1,3 +1,16 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+# docker compose alias
+if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
+root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"; cd "$root"
+
+CTR="app/Http/Controllers/ImapSettingsController.php"
+ROUTES="routes/web.php"
+
+echo "==> Write ultra-conservative ImapSettingsController (no ?, ??, ?->, ? :)"
+mkdir -p "$(dirname "$CTR")"
+cat > "$CTR" <<'PHP'
 <?php
 
 namespace App\Http\Controllers;
@@ -13,22 +26,7 @@ class ImapSettingsController extends Controller
 
     public function edit() {
         $s = ImapSetting::singleton();
-
-        $raw_list = is_array($s->last_folders_cache) ? $s->last_folders_cache : array();
-        $folders = array();
-        $i = 0;
-        foreach ($raw_list as $item) {
-            if (is_array($item) && isset($item['value'])) {
-                $val = (string)$item['value'];
-                $label = isset($item['label']) ? (string)$item['label'] : $this->humanLabel($val);
-            } else {
-                $val = (string)$item;
-                $label = $this->humanLabel($val);
-            }
-            $folders[] = array('value' => $val, 'label' => $label);
-            $i++;
-        }
-
+        $folders = is_array($s->last_folders_cache) ? $s->last_folders_cache : array();
         $log = $s->last_test_log ? $s->last_test_log : '';
         return view('settings.imap.edit', compact('s','folders','log'));
     }
@@ -53,7 +51,12 @@ class ImapSettingsController extends Controller
         }
 
         $s->fill($data);
-        $s->enabled = $request->has('enabled') ? (bool)$request->input('enabled') : false;
+
+        if ($request->has('enabled')) {
+            $s->enabled = (bool)$request->input('enabled');
+        } else {
+            $s->enabled = false;
+        }
 
         if ($request->has('selected_folders') && is_array($request->input('selected_folders'))) {
             $s->selected_folders = array_values($request->input('selected_folders'));
@@ -93,8 +96,7 @@ class ImapSettingsController extends Controller
         $cfg = $this->buildRuntimeConfig($request, $s);
 
         $log = '';
-        $out = array();
-        $seen = array();
+        $names = array();
 
         try {
             $cm = new ClientManager();
@@ -103,35 +105,17 @@ class ImapSettingsController extends Controller
 
             $folders = $client->getFolders(false);
             foreach ($folders as $f) {
-                $raw = '';
-                if (isset($f->path) && $f->path) { $raw = (string)$f->path; }
-                elseif (isset($f->full_name) && $f->full_name) { $raw = (string)$f->full_name; }
-                elseif (isset($f->fullName) && $f->fullName) { $raw = (string)$f->fullName; }
-                else { $raw = (string)$f->name; }
-
-                $val = $raw;                              // exact server path
-                $label = $this->humanLabel($raw);         // pretty label with arrows
-
-                if (!isset($seen[$val])) {
-                    $out[] = array('value' => $val, 'label' => $label);
-                    $seen[$val] = true;
-                }
+                $names[] = $f->name;
             }
+            sort($names, SORT_NATURAL|SORT_FLAG_CASE);
+            $log .= 'Fetched '.count($names).' folder(s).'."\n";
 
-            // Sort by pretty label
-            usort($out, function($a,$b){
-                $la = isset($a['label']) ? $a['label'] : '';
-                $lb = isset($b['label']) ? $b['label'] : '';
-                return strcasecmp($la, $lb);
-            });
-
-            $log .= 'Fetched '.count($out).' folder(s).'."\n";
             $client->disconnect();
         } catch (\Throwable $e) {
             $log .= 'ERROR: '.$e->getMessage()."\n";
         }
 
-        $s->last_folders_cache = $out;   // store as [{value, label}, ...]
+        $s->last_folders_cache = $names;
         $s->last_test_log = $log;
         $s->save();
 
@@ -169,17 +153,29 @@ class ImapSettingsController extends Controller
             'common_folders'=> false,
         );
     }
-
-    private function humanLabel($raw) {
-        $s = (string)$raw;
-        // Replace common IMAP delimiters with arrows
-        $s = str_replace('\\', '/', $s);
-        $parts = preg_split('/[\/\.]+/', $s);
-        if (!is_array($parts)) { return $s; }
-        // Optionally hide leading INBOX if followed by something
-        if (count($parts) > 1 && strtoupper($parts[0]) === 'INBOX') {
-            array_shift($parts);
-        }
-        return implode(' → ', $parts);
-    }
 }
+PHP
+
+echo "==> Make sure Test/Fetch routes accept POST and PUT (idempotent)"
+cp -a "$ROUTES" "$ROUTES.bak.$(date +%F_%H-%M-%S))"
+perl -0777 -i -pe "s/^.*settings\\/imap\\/test.*\\n//mg; s/^.*settings\\/imap\\/fetch.*\\n//mg" "$ROUTES"
+cat >> "$ROUTES" <<'PHP'
+
+Route::middleware(['auth'])->group(function () {
+    Route::match(['POST','PUT'], '/settings/imap/test',  [\App\Http\Controllers\ImapSettingsController::class, 'test'])->name('settings.imap.test');
+    Route::match(['POST','PUT'], '/settings/imap/fetch', [\App\Http\Controllers\ImapSettingsController::class, 'fetchFolders'])->name('settings.imap.fetch');
+});
+PHP
+
+echo "==> Fix perms & rebuild caches"
+chmod -R ug+rwX storage bootstrap 2>/dev/null || true
+find storage bootstrap -type d -exec chmod 775 {} \; 2>/dev/null || true
+$DC exec -T app bash -lc 'chown -R www-data:www-data storage bootstrap/cache || true'
+$DC exec -T app bash -lc '
+  set -e
+  php artisan optimize:clear || true
+  php artisan view:clear || true
+  php artisan view:cache || true
+  php artisan route:cache || true
+'
+echo "==> Done. Try /settings/imap, then Test connection and Fetch folders."
