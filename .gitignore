@@ -7,6 +7,6 @@
 /backup_*.tgz
 /.backup_before_*
 /.env
-/.env.*
 /storage/*.sqlite
 /public/storage
+!.env.example
