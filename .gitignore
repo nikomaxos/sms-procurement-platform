@@ -16,3 +16,7 @@ storage/_legacy/
 routes/*.bak.*
 database/migrations/_bak/
 /public/hot
+/.env.*
+/storage/*.log
+/storage/logs/
+/bootstrap/cache/*

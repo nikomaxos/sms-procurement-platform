@@ -1,39 +1,44 @@
-<aside class="w-64 shrink-0 border-r bg-white min-h-screen">
-  <nav class="py-4">
-    <ul class="px-2 space-y-1 text-sm">
+<div class="space-y-4">
+  <!-- Dashboard -->
+  <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded hover:bg-gray-100">Dashboard</a>
 
-      <li>
-        <a href="{{ route('dashboard') }}"
-           class="block rounded px-3 py-2 {{ request()->routeIs('dashboard') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">
-          Dashboard
-        </a>
-      </li>
+  <!-- Catalogs -->
+  <div>
+    <div class="px-3 py-2 text-xs uppercase tracking-wide text-gray-500">Catalogs</div>
+    <a href="{{ route('countries.index') }}" class="block px-3 py-2 rounded hover:bg-gray-100">Countries</a>
+    <a href="{{ route('networks.index') }}" class="block px-3 py-2 rounded hover:bg-gray-100">Networks</a>
+  </div>
 
-      <li class="mt-4 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-        Settings
-      </li><li>
-        <a href="{{ route('settings.dropdowns.index') }}"
-           class="block rounded px-3 py-2 {{ request()->routeIs('settings.dropdowns.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">
-          Drop Down Menus
-        </a>
-      </li>
+  <!-- Settings -->
+  <div>
+    <div class="px-3 py-2 text-xs uppercase tracking-wide text-gray-500">Settings</div>
 
-      <li>
-        <a href="{{ route('settings.imap.edit') }}"
-           class="block rounded px-3 py-2 {{ request()->routeIs('settings.imap.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">
-          IMAP Settings
-        </a>
-      </li>
+    @if (\Illuminate\Support\Facades\Route::has('settings.dropdowns.index'))
+      <a href="{{ route('settings.dropdowns.index') }}" class="block px-3 py-2 rounded hover:bg-gray-100">Drop Down Menus</a>
+    @endif
 
-      @if(auth()->check() && auth()->user()?->role === 'admin')
-      <li>
-        <a href="{{ route('settings.users.index') }}"
-           class="block rounded px-3 py-2 {{ request()->routeIs('settings.users.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">
-          Users Management
-        </a>
-      </li>
-      @endif
+    @php
+      $u = auth()->user();
+      $isAdmin = $u && (
+        (($u->is_admin ?? false) === true) ||
+        (($u->admin ?? false) === true) ||
+        (isset($u->role) && in_array(strtolower((string)$u->role), ['admin','administrator','superadmin','owner'], true)) ||
+        (method_exists($u, 'isAdmin') && $u->isAdmin()) ||
+        (\Illuminate\Support\Facades\Gate::allows('admin')) ||
+        (\Illuminate\Support\Facades\Gate::allows('manage-users')) ||
+        ($u->can('admin') ?? false) ||
+        ($u->can('manage-users') ?? false)
+      );
+    @endphp
 
-    </ul>
-  </nav>
-</aside>
+    {{-- Users Management: only for admins --}}
+    @if ($isAdmin && \Illuminate\Support\Facades\Route::has('settings.users.index'))
+      <a href="{{ route('settings.users.index') }}" class="block px-3 py-2 rounded hover:bg-gray-100">Users Management</a>
+    @endif
+
+    {{-- IMAP Settings: only for admins --}}
+    @if ($isAdmin && \Illuminate\Support\Facades\Route::has('settings.imap.edit'))
+      <a href="{{ route('settings.imap.edit') }}" class="block px-3 py-2 rounded hover:bg-gray-100">IMAP Settings</a>
+    @endif
+  </div>
+</div>

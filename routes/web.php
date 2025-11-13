@@ -16,7 +16,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
 
     // Settings hub + subpages
-    Route::get('/settings/imap', [ImapSettingsController::class, 'edit'])->name('settings.imap.edit');
+    Route::get('/settings/imap', [ImapSettingsController::class, 'edit'])->middleware('admin') ->name('settings.imap.edit');
 
     // Profile management (if Breeze profile controller exists)
     if (class_exists(ProfileController::class)) {
@@ -111,3 +111,26 @@ Route::middleware(['auth'])->group(function () {
     Route::match(['POST','PUT'], '/settings/imap/test',  [\App\Http\Controllers\ImapSettingsController::class, 'test'])->name('settings.imap.test');
     Route::match(['POST','PUT'], '/settings/imap/fetch', [\App\Http\Controllers\ImapSettingsController::class, 'fetchFolders'])->name('settings.imap.fetch');
 });
+
+
+// === Countries & Networks (top-level) ===
+Route::middleware(["auth"])->group(function () {
+    Route::get("/countries", [\App\Http\Controllers\CountriesController::class, "index"])->name("countries.index");
+    Route::get("/countries/create", [\App\Http\Controllers\CountriesController::class, "create"])->name("countries.create");
+    Route::post("/countries", [\App\Http\Controllers\CountriesController::class, "store"])->name("countries.store");
+    Route::get("/countries/{country}/edit", [\App\Http\Controllers\CountriesController::class, "edit"])->name("countries.edit");
+    Route::put("/countries/{country}", [\App\Http\Controllers\CountriesController::class, "update"])->name("countries.update");
+    Route::delete("/countries/{country}", [\App\Http\Controllers\CountriesController::class, "destroy"])->name("countries.destroy");
+    Route::get("/countries/lookup", [\App\Http\Controllers\CountriesController::class, "lookup"])->name("countries.lookup");
+
+    Route::get("/networks", [\App\Http\Controllers\NetworksController::class, "index"])->name("networks.index");
+    Route::get("/networks/create", [\App\Http\Controllers\NetworksController::class, "create"])->name("networks.create");
+    Route::post("/networks", [\App\Http\Controllers\NetworksController::class, "store"])->name("networks.store");
+    Route::get("/networks/{network}/edit", [\App\Http\Controllers\NetworksController::class, "edit"])->name("networks.edit");
+    Route::put("/networks/{network}", [\App\Http\Controllers\NetworksController::class, "update"])->name("networks.update");
+    Route::delete("/networks/{network}", [\App\Http\Controllers\NetworksController::class, "destroy"])->name("networks.destroy");
+});
+
+
+// === Carriers Import (UI trigger) ===
+Route::middleware(["auth"])->post("/carriers/import", [\App\Http\Controllers\CarriersImportController::class, "run"])->name("carriers.import");

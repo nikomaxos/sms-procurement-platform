@@ -1,0 +1,47 @@
+@extends('layouts.app')
+@section('content')
+<div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <h2 class="font-semibold text-xl text-gray-800 mb-4">Networks</h2>
+
+  <form method="GET" class="mb-4 grid grid-cols-1 md:grid-cols-6 gap-3">
+    <input name="q" value="{{ $q }}" placeholder="Search name" class="rounded border px-3 py-2">
+    <input name="mcc" value="{{ $mcc }}" placeholder="MCC" class="rounded border px-3 py-2">
+    <input name="mnc" value="{{ $mnc }}" placeholder="MNC" class="rounded border px-3 py-2">
+    <input name="country" value="{{ $country }}" placeholder="Country name / ISO" class="rounded border px-3 py-2">
+    <button class="rounded bg-blue-600 px-4 py-2 text-white">Filter</button>
+    <a href="{{ route('networks.create') }}" class="rounded bg-gray-700 px-4 py-2 text-white text-center">Add Network</a>
+  </form>
+
+  @if (session('status'))
+    <div class="mb-3 rounded border bg-green-50 text-green-800 px-4 py-2 text-sm">{{ session('status') }}</div>
+  @endif
+
+  <div class="overflow-auto bg-white rounded border">
+    <table class="min-w-full text-sm">
+      <thead><tr class="text-left">
+        <th class="px-3 py-2">Name</th><th class="px-3 py-2">MCC</th><th class="px-3 py-2">MNC</th><th class="px-3 py-2">MCC-MNC</th><th class="px-3 py-2">Country</th><th class="px-3 py-2"></th>
+      </tr></thead>
+      <tbody>
+      @foreach ($networks as $n)
+        <tr class="border-t">
+          <td class="px-3 py-2">{{ $n->name }}</td>
+          <td class="px-3 py-2">{{ $n->mcc }}</td>
+          <td class="px-3 py-2">{{ $n->mnc }}</td>
+          <td class="px-3 py-2">{{ $n->mcc_mnc }}</td>
+          <td class="px-3 py-2">{{ optional($n->country)->name }}</td>
+          <td class="px-3 py-2">
+            <a href="{{ route('networks.edit',$n) }}" class="text-blue-600 hover:underline">Edit</a>
+            <form method="POST" action="{{ route('networks.destroy',$n) }}" class="inline" onsubmit="return confirm('Delete network?')">
+              @csrf @method('DELETE')
+              <button class="text-red-600 hover:underline ms-2">Delete</button>
+            </form>
+          </td>
+        </tr>
+      @endforeach
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-4">{{ $networks->links() }}</div>
+</div>
+@endsection
