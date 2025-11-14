@@ -1,3 +1,13 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+ts="$(date +%F_%H-%M-%S)"
+b(){ [ -f "$1" ] && cp -a "$1" "$1.bak.$ts" || true; }
+if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
+
+F="resources/views/networks/index.blade.php"
+b "$F"; mkdir -p "$(dirname "$F")"
+
+cat > "$F" <<'BLADE'
 <x-app-layout>
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">Networks</h2>
@@ -59,3 +69,12 @@
     </div>
   </div>
 </x-app-layout>
+BLADE
+
+# Rebuild caches inside the app container
+$DC exec -T app sh -lc '
+  php artisan optimize:clear
+  php artisan view:cache
+  php artisan route:cache
+'
+echo "Round20: networks/index.blade.php replaced and caches rebuilt."

@@ -3,85 +3,92 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Network;
-use App\Models\Country;
+use App\Models\NetworkMnc;
 
-class NetworksController extends Controller {
-    public function __construct(){ $this->middleware('auth'); }
-
-    public function index(Request $r){
+class NetworksController extends Controller
+{
+    public function index(Request $r)
+    {
         $per = (int) $r->input('per', 20);
-        if (!in_array($per, [20,50,100,1000])) $per = 20;
+        if (!in_array($per,[20,50,100,1000])) $per = 20;
 
-        $q        = trim((string) $r->input('q',''));
-        $mcc      = trim((string) $r->input('mcc',''));
-        $mnc      = trim((string) $r->input('mnc',''));
-        $mcc_mnc  = trim((string) $r->input('mcc_mnc',''));
-        $countryQ = trim((string) $r->input('country',''));
+        $q = Network::query()->with(['country','mncs'=>fn($qq)=>$qq->orderBy('mnc')]);
 
-        $networks = Network::query()
-            ->leftJoin('countries','countries.id','=','networks.country_id')
-            ->select('networks.*','countries.name as country_name')
-            ->when($q !== '', function($qq) use ($q){
-                $qq->where(function($w) use ($q){
-                    $w->where('networks.name','ilike',"%{$q}%")
-                      ->orWhere('networks.mcc','ilike',"%{$q}%")
-                      ->orWhere('networks.mnc','ilike',"%{$q}%")
-                      ->orWhere('networks.mcc_mnc','ilike',"%{$q}%")
-                      ->orWhere('countries.name','ilike',"%{$q}%");
-                });
-            })
-            ->when($mcc !== '',     fn($qq)=>$qq->where('networks.mcc',$mcc))
-            ->when($mnc !== '',     fn($qq)=>$qq->where('networks.mnc',$mnc))
-            ->when($mcc_mnc !== '', fn($qq)=>$qq->where('networks.mcc_mnc','ilike',"%{$mcc_mnc}%"))
-            ->when($countryQ !== '',fn($qq)=>$qq->where('countries.name','ilike',"%{$countryQ}%"))
-            ->orderBy('country_name')
-            ->orderBy('networks.mcc_mnc')
-            ->paginate($per)
-            ->appends($r->all());
+        if ($r->filled('q'))       $q->where('name','ilike','%'.$r->q.'%');
+        if ($r->filled('country')) $q->whereHas('country', fn($c)=>$c->where('name','ilike','%'.$r->country.'%'));
+        if ($r->filled('mcc'))     $q->whereHas('mncs', fn($m)=>$m->where('mcc',$r->mcc));
+        if ($r->filled('mnc'))     $q->whereHas('mncs', fn($m)=>$m->where('mnc',$r->mnc));
+        if ($r->filled('mcc_mnc')) $q->whereHas('mncs', fn($m)=>$m->where('mcc_mnc','ilike','%'.$r->mcc_mnc.'%'));
 
-        // keep relation available in views
-        $networks->getCollection()->load('country');
-
+        $networks = $q->orderBy('name','asc')->paginate($per)->appends($r->all());
         return view('networks.index', compact('networks'));
     }
 
-    public function create(){
-        $network   = new Network();
-        $countries = Country::orderBy('name')->get(['id','name']);
-        return view('networks.create', compact('network','countries'));
+    public function create()
+    {
+        $network = new Network();
+        return view('networks.create', compact('network'));
     }
 
-    public function store(Request $r){
+    public function edit(Network $network)
+    {
+        $network->load(['mncs','country.mccs']);
+        $primaryMcc = $network->mncs->pluck('mcc')->filter()->first()
+            ?? optional($network->country?->mccs->first())->mcc
+            ?? '';
+        return view('networks.edit', compact('network','primaryMcc'));
+    }
+
+    public function store(Request $r)
+    {
         $data = $r->validate([
-            'country_id' => 'required|exists:countries,id',
-            'name'       => 'required|string|max:255',
-            'mcc'        => 'required|string|max:3',
-            'mnc'        => 'required|string|max:3',
+            'name'=>'required|string',
+            'country_id'=>'required|integer'
         ]);
-        $data['mcc_mnc'] = ($data['mcc'] ?? '').($data['mnc'] ?? '');
-        $network = Network::create($data);
-        return redirect()->route('networks.edit',$network)->with('status','Network created');
+        $n = new Network($data);
+        $n->save();
+        return redirect()->route('networks.edit',$n)->with('status','Created.');
     }
 
-    public function edit(Network $network){
-        $countries = Country::orderBy('name')->get(['id','name']);
-        return view('networks.edit', compact('network','countries'));
+    public function update(Request $r, Network $network)
+    {
+        $network->name = trim((string)$r->input('name',$network->name));
+        $network->save();
+
+        $network->load(['mncs','country.mccs']);
+        $primaryMcc = $network->mncs->pluck('mcc')->filter()->first()
+            ?? optional($network->country?->mccs->first())->mcc
+            ?? '';
+
+        $mncs = (array) $r->input('mncs', []);
+        $toDelete = array_map('intval', array_keys((array)$r->input('delete_mncs', [])));
+        if ($toDelete) {
+            NetworkMnc::where('network_id',$network->id)->whereIn('id',$toDelete)->delete();
+        }
+
+        foreach ($mncs as $row) {
+            $id  = isset($row['id']) ? (int)$row['id'] : null;
+            $mnc = trim((string)($row['mnc'] ?? ''));
+            if ($mnc==='') continue;
+
+            $nm = $id
+                ? NetworkMnc::where('network_id',$network->id)->where('id',$id)->first()
+                : new NetworkMnc();
+
+            if (!$nm) $nm = new NetworkMnc();
+            $nm->network_id = $network->id;
+            $nm->mcc = (string)$primaryMcc;
+            $nm->mnc = $mnc;
+            $nm->mcc_mnc = ((string)$primaryMcc).$mnc;
+            $nm->save();
+        }
+
+        return redirect()->route('networks.edit',$network)->with('status','Saved.');
     }
 
-    public function update(Request $r, Network $network){
-        $data = $r->validate([
-            'country_id' => 'required|exists:countries,id',
-            'name'       => 'required|string|max:255',
-            'mcc'        => 'required|string|max:3',
-            'mnc'        => 'required|string|max:3',
-        ]);
-        $data['mcc_mnc'] = ($data['mcc'] ?? '').($data['mnc'] ?? '');
-        $network->update($data);
-        return back()->with('status','Network updated');
-    }
-
-    public function destroy(Network $network){
+    public function destroy(Network $network)
+    {
         $network->delete();
-        return redirect()->route('networks.index')->with('status','Deleted');
+        return back()->with('status','Deleted.');
     }
 }

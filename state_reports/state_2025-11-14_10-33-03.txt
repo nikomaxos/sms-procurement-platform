@@ -1,0 +1,344 @@
+=== STATE REPORT 2025-11-14_10-33-03 ===
+pwd=/home/user/sms-procurement-platform
+
+---- GIT ----
+branch: main
+last-commit: d288392 2025-11-13 04:28:35 +0200 Tidy: remove stray file + dedupe dropdown routes + ignore *.bak.*
+status (porcelain):
+ M app/Console/Commands/ImportCarriers.php
+ M app/Console/Kernel.php
+ M app/Http/Controllers/CarriersImportController.php
+ M app/Http/Controllers/CountriesController.php
+ M app/Http/Controllers/NetworksController.php
+ M app/Models/Network.php
+ M resources/views/countries/edit.blade.php
+ M resources/views/countries/index.blade.php
+ M resources/views/networks/_form.blade.php
+ M resources/views/networks/create.blade.php
+ M resources/views/networks/edit.blade.php
+ M resources/views/networks/index.blade.php
+ M routes/web.php
+?? app/Console/Commands/BackfillLegacyMncs.php
+?? app/Console/Commands/CarriersImport.php
+?? app/Console/Commands/MergeNetworksByCountryName.php
+?? app/Http/Controllers/CountriesController.php.tmp
+?? app/Http/Controllers/NetworksController.php.tmp
+?? app/Models/NetworkMnc.php
+?? app/Services/
+?? database/migrations/2025_11_13_103815_add_network_mncs_and_audit.php
+?? database/migrations/2025_11_13_105616_add_unique_networks_country_lowername.php
+?? database/migrations/2025_11_13_122038_add_marked_flag_to_networks.php
+?? database/migrations/2025_11_13_132900_add_audit_cols_to_network_mncs.php
+?? database/migrations/2025_11_13_234532_relax_legacy_not_null_on_networks_mcc_mnc.php
+?? database/migrations/2025_11_13_235202_relax_networks_mcc_notnull.php
+?? resources/views/carriers/
+?? resources/views/components/mnc-row.blade.php
+?? scripts/fix_countries_and_networks_now.sh
+?? scripts/fix_mncs_migration_and_merge.sh
+?? scripts/fix_mncs_migration_and_merge_v2.sh
+?? scripts/fix_networks_orderby_nm.sh
+?? scripts/networks_edit_ui_and_list_fix.sh
+?? scripts/networks_fix_actions_header_body.sh
+?? scripts/networks_fix_actions_header_body_v2.sh
+?? scripts/networks_multimnc_reconcile.sh
+?? scripts/networks_round3_fix.sh
+?? scripts/networks_round3_fix_v2.sh
+?? scripts/networks_round4_ui_and_fetch.sh
+?? scripts/networks_round5_safe.sh
+?? scripts/networks_round6_fix_fetch_ui.sh
+?? scripts/networks_round7_hotfix.sh
+?? scripts/networks_round8_fix_import_and_ui.sh
+?? scripts/networks_round8_hotfix.sh
+?? scripts/networks_round8_hotfix_v2.sh
+?? scripts/networks_round8_repair.sh
+?? scripts/networks_round9_fix_actions_v2.sh
+?? scripts/networks_round9_restore_features.sh
+?? scripts/repair_networks_controller.sh
+?? scripts/round10_unbreak_countries_networks.sh
+?? scripts/round11_total_fix.sh
+?? scripts/round12_full_repair.sh
+?? scripts/round13_hard_reset_networks_countries_and_import.sh
+?? scripts/round14_kernel_importer_and_ui_fix.sh
+?? scripts/round15_schema_and_import_fix.sh
+?? scripts/round16_import_service_and_controller_fix.sh
+?? scripts/round17_clean_controllers_views_import_route.sh
+?? scripts/round18_fix_routes_and_recache.sh
+?? scripts/round19_fix_countries_edit_and_import_view.sh
+?? scripts/round20_fix_networks_index_route_param.sh
+?? scripts/state_report.sh
+?? state_reports/
+?? tools/patches/
+
+tags (last 10):
+release_catalogs_admin_nav_20251113_042513
+imap-settings-ui_20251113_011252
+drop-down-menus-working-20251113_004222
+drop-down-menus-working-20251112_231220
+core-menus-ok-2025-11-12_11-53-51
+v0.1.0
+remote-main-before-20251111-010142
+
+---- RUNTIME (inside app) ----
+PHP 8.4.14 (cli) (built: Nov  4 2025 04:08:40) (NTS)
+Laravel Framework 12.37.0
+name     : laravel/framework
+descrip. : The Laravel Framework.
+keywords : framework, laravel
+name     : webklex/php-imap
+descrip. : PHP IMAP client
+keywords : imap, mail, php-imap, pop3, webklex
+
+---- ROUTES (filtered) ----
+
+---- MIGRATIONS ----
+
+  Migration name .............................................. Batch / Status  
+  0001_01_01_000000_create_users_table ............................... [1] Ran  
+  0001_01_01_000001_create_cache_table ............................... [1] Ran  
+  0001_01_01_000002_create_jobs_table ................................ [1] Ran  
+  2025_11_10_151408_add_is_admin_to_users_table ...................... [1] Ran  
+  2025_11_10_151408_create_route_types_table ......................... [1] Ran  
+  2025_11_10_151409_create_charge_models_table ....................... [1] Ran  
+  2025_11_10_151409_create_known_hops_table .......................... [1] Ran  
+  2025_11_10_231903_create_auth_logs_table ........................... [1] Ran  
+  2025_11_11_002716_add_timestamps_to_auth_logs ...................... [1] Ran  
+  2025_11_12_153130_add_role_to_users_table .......................... [2] Ran  
+  2025_11_12_225654_create_dropdown_menus_table ...................... [3] Ran  
+  2025_11_12_225656_create_dropdown_items_table ...................... [3] Ran  
+  2025_11_12_230233_add_position_to_dropdown_items ................... [4] Ran  
+  2025_11_12_232723_create_imap_settings_table ....................... [5] Ran  
+  2025_11_13_002840_add_last_run_at_to_imap_settings ................. [6] Ran  
+  2025_11_13_011420_create_countries_and_networks .................... [7] Ran  
+  2025_11_13_012301_create_countries_and_networks .................... [7] Ran  
+  2025_11_13_103815_add_network_mncs_and_audit ....................... [8] Ran  
+  2025_11_13_105616_add_unique_networks_country_lowername ............ [9] Ran  
+  2025_11_13_122038_add_marked_flag_to_networks ..................... [10] Ran  
+  2025_11_13_132900_add_audit_cols_to_network_mncs .................. [11] Ran  
+  2025_11_13_234532_relax_legacy_not_null_on_networks_mcc_mnc ....... [11] Ran  
+  2025_11_13_235202_relax_networks_mcc_notnull ...................... [12] Ran  
+
+
+---- DB COUNTS ----
+{
+    "countries": 231,
+    "country_mccs": 0,
+    "networks": 1510,
+    "network_mncs": 0
+}
+
+---- FILES ----
+total 172
+drwxrwxr-x 2 user user 4096 Nov 11 16:59 Admin
+drwxrwxr-x 2 user user 4096 Nov 12 15:02 Auth
+-rw-rw-r-- 1 user user  716 Nov 14 00:05 CarriersImportController.php
+-rw-rw-r-- 1 user user  548 Nov 13 14:03 CarriersImportController.php.bak.2025-11-13_14-29-49
+-rw-rw-r-- 1 user user  545 Nov 13 14:29 CarriersImportController.php.bak.2025-11-13_17-08-33
+-rw-rw-r-- 1 user user 3794 Nov 13 17:08 CarriersImportController.php.bak.2025-11-13_17-25-09
+-rw-rw-r-- 1 user user  509 Nov 13 17:25 CarriersImportController.php.bak.2025-11-13_17-41-00
+-rw-rw-r-- 1 user user  509 Nov 13 17:41 CarriersImportController.php.bak.2025-11-13_23-52-02
+-rw-rw-r-- 1 user user  750 Nov 13 23:52 CarriersImportController.php.bak.2025-11-14_00-05-11
+-rw-rw-r-- 1 user user  298 Nov 12 11:01 Controller.php
+-rw-rw-r-- 1 user user  628 Nov 14 00:05 CountriesController.php
+-rw-rw-r-- 1 user user 2516 Nov 13 04:13 CountriesController.php.bak.2025-11-13_15-34-38
+-rw-rw-r-- 1 user user 2592 Nov 13 15:34 CountriesController.php.bak.2025-11-13_16-17-28
+-rw-rw-r-- 1 user user 2454 Nov 13 16:17 CountriesController.php.bak.2025-11-13_16-28-57
+-rw-rw-r-- 1 user user 2552 Nov 13 16:28 CountriesController.php.bak.2025-11-13_16-51-02
+-rw-rw-r-- 1 user user  614 Nov 13 16:51 CountriesController.php.bak.2025-11-13_17-08-33
+-rw-rw-r-- 1 user user  666 Nov 13 17:08 CountriesController.php.bak.2025-11-13_17-41-00
+-rw-rw-r-- 1 user user  601 Nov 13 17:41 CountriesController.php.bak.2025-11-13_23-52-02
+-rw-rw-r-- 1 user user  601 Nov 13 17:41 CountriesController.php.bak.2025-11-14_00-05-11
+-rw-rw-r-- 1 user user    0 Nov 13 23:52 CountriesController.php.tmp
+-rw-rw-r-- 1 user user  223 Nov 12 11:01 DropDownController.php
+-rw-rw-r-- 1 user user 6633 Nov 13 00:20 ImapSettingsController.php
+-rw-rw-r-- 1 user user 3268 Nov 14 00:05 NetworksController.php
+-rw-rw-r-- 1 user user 1133 Nov 13 14:03 NetworksController.php.bak.2025-11-13_14-07-53
+-rw-rw-r-- 1 user user 5127 Nov 13 14:07 NetworksController.php.bak.2025-11-13_14-29-49
+-rw-rw-r-- 1 user user 3421 Nov 13 14:58 NetworksController.php.bak.2025-11-13_15-03-15
+-rw-rw-r-- 1 user user 3421 Nov 13 14:58 NetworksController.php.bak.2025-11-13_15-03-18
+-rw-rw-r-- 1 user user 3421 Nov 13 14:58 NetworksController.php.bak.2025-11-13_15-14-06
+-rw-rw-r-- 1 user user 3500 Nov 13 15:14 NetworksController.php.bak.2025-11-13_15-14-23
+-rw-rw-r-- 1 user user 3503 Nov 13 15:14 NetworksController.php.bak.2025-11-13_15-14-42
+-rw-rw-r-- 1 user user 3504 Nov 13 15:14 NetworksController.php.bak.2025-11-13_15-22-25
+-rw-rw-r-- 1 user user 3541 Nov 13 15:22 NetworksController.php.bak.2025-11-13_16-17-28
+-rw-rw-r-- 1 user user 3467 Nov 13 16:17 NetworksController.php.bak.2025-11-13_16-28-57
+-rw-rw-r-- 1 user user 3403 Nov 13 16:28 NetworksController.php.bak.2025-11-13_16-51-02
+-rw-rw-r-- 1 user user 3504 Nov 13 16:51 NetworksController.php.bak.2025-11-13_17-08-33
+-rw-rw-r-- 1 user user 3461 Nov 13 17:08 NetworksController.php.bak.2025-11-13_17-41-00
+-rw-rw-r-- 1 user user 3335 Nov 13 17:41 NetworksController.php.bak.2025-11-13_23-52-02
+-rw-rw-r-- 1 user user 3410 Nov 13 23:52 NetworksController.php.bak.2025-11-14_00-05-11
+-rw-rw-r-- 1 user user    0 Nov 13 23:52 NetworksController.php.tmp
+-rw-rw-r-- 1 user user 1416 Nov 11 16:59 ProfileController.php
+-rw-rw-r-- 1 user user 1416 Nov 11 16:59 ProfileController.php.bak.2025-11-12_22-25-02
+-rw-rw-r-- 1 user user    0 Nov 12 22:25 ProfileController.php.tmp
+drwxrwxr-x 2 user user 4096 Nov 12 22:42 Settings
+-rw-rw-r-- 1 user user  213 Nov 12 11:01 SettingsController.php
+total 32
+-rw-rw-r-- 1 user user 1644 Nov 13 03:15 create.blade.php
+-rw-rw-r-- 1 user user 1052 Nov 14 00:23 edit.blade.php
+-rw-rw-r-- 1 user user 1670 Nov 13 03:15 edit.blade.php.bak.2025-11-13_17-08-33
+-rw-rw-r-- 1 user user 1670 Nov 13 17:08 edit.blade.php.bak.2025-11-13_17-41-00
+-rw-rw-r-- 1 user user  698 Nov 13 17:41 edit.blade.php.bak.2025-11-14_00-23-21
+-rw-rw-r-- 1 user user 2182 Nov 13 16:17 index.blade.php
+-rw-rw-r-- 1 user user 2850 Nov 13 01:23 index.blade.php.bak.2025-11-13_01-28-11
+-rw-rw-r-- 1 user user 3340 Nov 13 03:56 index.blade.php.bak.2025-11-13_16-17-28
+total 212
+-rw-rw-r-- 1 user user 3780 Nov 13 13:52 _form.blade.php
+-rw-rw-r-- 1 user user 1069 Nov 14 00:05 create.blade.php
+-rw-rw-r-- 1 user user  620 Nov 13 12:20 create.blade.php.bak.2025-11-13_16-51-02
+-rw-rw-r-- 1 user user 1191 Nov 13 16:51 create.blade.php.bak.2025-11-13_17-08-33
+-rw-rw-r-- 1 user user 1215 Nov 13 17:08 create.blade.php.bak.2025-11-13_17-41-00
+-rw-rw-r-- 1 user user 1215 Nov 13 17:41 create.blade.php.bak.2025-11-13_23-52-02
+-rw-rw-r-- 1 user user 1077 Nov 13 23:52 create.blade.php.bak.2025-11-14_00-05-11
+-rw-rw-r-- 1 user user 5292 Nov 14 00:05 edit.blade.php
+-rw-rw-r-- 1 user user 6185 Nov 13 14:03 edit.blade.php.bak.2025-11-13_14-29-49
+-rw-rw-r-- 1 user user 6168 Nov 13 14:58 edit.blade.php.bak.2025-11-13_15-34-38
+-rw-rw-r-- 1 user user 6168 Nov 13 14:58 edit.blade.php.bak.2025-11-13_16-28-57
+-rw-rw-r-- 1 user user 5886 Nov 13 16:28 edit.blade.php.bak.2025-11-13_16-51-02
+-rw-rw-r-- 1 user user 5718 Nov 13 16:51 edit.blade.php.bak.2025-11-13_17-08-33
+-rw-rw-r-- 1 user user 5670 Nov 13 17:08 edit.blade.php.bak.2025-11-13_17-41-00
+-rw-rw-r-- 1 user user 5452 Nov 13 17:41 edit.blade.php.bak.2025-11-13_23-52-02
+-rw-rw-r-- 1 user user 5452 Nov 13 23:52 edit.blade.php.bak.2025-11-14_00-05-11
+-rw-rw-r-- 1 user user 2510 Nov 14 09:18 index.blade.php
+-rw-rw-r-- 1 user user 2268 Nov 13 01:23 index.blade.php.bak.2025-11-13_01-28-11
+-rw-rw-r-- 1 user user 3900 Nov 13 14:03 index.blade.php.bak.2025-11-13_14-29-49
+-rw-rw-r-- 1 user user 4186 Nov 13 14:58 index.blade.php.bak.2025-11-13_15-34-38
+-rw-rw-r-- 1 user user 4251 Nov 13 15:34 index.blade.php.bak.2025-11-13_15-43-30
+-rw-rw-r-- 1 user user 4251 Nov 13 15:34 index.blade.php.bak.2025-11-13_15-43-32
+-rw-rw-r-- 1 user user 4251 Nov 13 15:34 index.blade.php.bak.2025-11-13_15-57-49
+-rw-rw-r-- 1 user user 4251 Nov 13 15:34 index.blade.php.bak.2025-11-13_15-57-54
+-rw-rw-r-- 1 user user 4251 Nov 13 15:34 index.blade.php.bak.2025-11-13_15-58-25
+-rw-rw-r-- 1 user user 4251 Nov 13 15:34 index.blade.php.bak.2025-11-13_16-06-33
+-rw-rw-r-- 1 user user 4363 Nov 13 16:06 index.blade.php.bak.2025-11-13_16-28-57
+-rw-rw-r-- 1 user user 4408 Nov 13 16:28 index.blade.php.bak.2025-11-13_16-51-02
+-rw-rw-r-- 1 user user 4408 Nov 13 16:51 index.blade.php.bak.2025-11-13_17-08-33
+-rw-rw-r-- 1 user user 4331 Nov 13 17:08 index.blade.php.bak.2025-11-13_17-41-00
+-rw-rw-r-- 1 user user 4237 Nov 13 17:41 index.blade.php.bak.2025-11-14_00-05-11
+-rw-rw-r-- 1 user user 4081 Nov 14 00:05 index.blade.php.bak.2025-11-14_09-18-18
+
+---- routes/web.php (first 120 lines) ----
+     1	<?php
+     2	
+     3	use Illuminate\Support\Facades\Route;
+     4	use App\Http\Controllers\ProfileController;
+     5	use App\Http\Controllers\SettingsController;
+     6	use App\Http\Controllers\ImapSettingsController;
+     7	use App\Http\Controllers\DropDownController;
+     8	
+     9	Route::get('/healthz', fn() => response('ok', 200));
+    10	
+    11	Route::get('/', function () {
+    12	    return view('welcome');
+    13	});
+    14	
+    15	// Authenticated area
+    16	Route::middleware(['auth'])->group(function () {
+    17	    // Dashboard
+    18	    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
+    19	
+    20	    // Settings hub + subpages
+    21	    Route::get('/settings/imap', [ImapSettingsController::class, 'edit'])->middleware('admin') ->name('settings.imap.edit');
+    22	
+    23	    // Profile management (if Breeze profile controller exists)
+    24	    if (class_exists(ProfileController::class)) {
+    25	        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    26	        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    27	        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    28	    }
+    29	});
+    30	
+    31	if (file_exists(__DIR__.'/auth.php')) {
+    32	    require __DIR__.'/auth.php';
+    33	}
+    34	
+    35	// Change Password (auth)
+    36	Route::middleware('auth')->group(function () {
+    37	    Route::get('/password/change', [\App\Http\Controllers\Auth\PasswordChangeController::class, 'edit'])
+    38	        ->name('password.change');
+    39	    Route::put('/password/change', [\App\Http\Controllers\Auth\PasswordChangeController::class, 'update'])
+    40	        ->name('password.change.update');
+    41	});
+    42	
+    43	// Users Management (admin-only via controller middleware implemented in controller)
+    44	Route::middleware(['auth'])->prefix('settings')->name('settings.')->group(function () {
+    45	    Route::resource('users', \App\Http\Controllers\Settings\UsersManagementController::class)
+    46	        ->except(['show'])
+    47	        ->names('users');
+    48	});
+    49	
+    50	// Drop Down Menus + Items (auth)
+    51	Route::middleware(['auth'])->prefix('settings/dropdowns')->name('settings.dropdowns.')->group(function () {
+    52	    // Menus
+    53	    Route::get('/', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'index'])->name('index');
+    54	    Route::get('/create', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'create'])->name('create');
+    55	    Route::post('/', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'store'])->name('store');
+    56	    Route::get('/{menu}/edit', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'edit'])->name('edit');
+    57	    Route::put('/{menu}', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'update'])->name('update');
+    58	    Route::delete('/{menu}', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'destroy'])->name('destroy');
+    59	
+    60	    // Items (within a menu)
+    61	    Route::get('/{menu}/items', [\App\Http\Controllers\Settings\DropdownItemController::class, 'index'])->name('items.index');
+    62	    Route::post('/{menu}/items', [\App\Http\Controllers\Settings\DropdownItemController::class, 'store'])->name('items.store');
+    63	    Route::get('/{menu}/items/{item}/edit', [\App\Http\Controllers\Settings\DropdownItemController::class, 'edit'])->name('items.edit');
+    64	    Route::put('/{menu}/items/{item}', [\App\Http\Controllers\Settings\DropdownItemController::class, 'update'])->name('items.update');
+    65	    Route::delete('/{menu}/items/{item}', [\App\Http\Controllers\Settings\DropdownItemController::class, 'destroy'])->name('items.destroy');
+    66	});
+    67	
+    68	// Drop Down Menus + Items (auth)
+    69	Route::middleware(['auth'])->prefix('settings/dropdowns')->name('settings.dropdowns.')->group(function () {
+    70	    // Menus
+    71	    Route::get('/', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'index'])->name('index');
+    72	    Route::get('/create', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'create'])->name('create');
+    73	    Route::post('/', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'store'])->name('store');
+    74	    Route::get('/{menu}/edit', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'edit'])->name('edit');
+    75	    Route::put('/{menu}', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'update'])->name('update');
+    76	    Route::delete('/{menu}', [\App\Http\Controllers\Settings\DropdownMenuController::class, 'destroy'])->name('destroy');
+    77	
+    78	    // Items
+    79	    Route::get('/{menu}/items', [\App\Http\Controllers\Settings\DropdownItemController::class, 'index'])->name('items.index');
+    80	    Route::post('/{menu}/items', [\App\Http\Controllers\Settings\DropdownItemController::class, 'store'])->name('items.store');
+    81	    Route::get('/{menu}/items/{item}/edit', [\App\Http\Controllers\Settings\DropdownItemController::class, 'edit'])->name('items.edit');
+    82	    Route::put('/{menu}/items/{item}', [\App\Http\Controllers\Settings\DropdownItemController::class, 'update'])->name('items.update');
+    83	    Route::delete('/{menu}/items/{item}', [\App\Http\Controllers\Settings\DropdownItemController::class, 'destroy'])->name('items.destroy');
+    84	});
+    85	
+    86	Route::post(
+    87	  '/settings/dropdowns/{menu}/items/reorder',
+    88	  [\App\Http\Controllers\Settings\DropdownItemController::class, 'reorder']
+    89	)->middleware('auth')->name('settings.dropdowns.items.reorder');
+    90	
+    91	
+    92	Route::middleware(["auth"])->group(function () {
+    93	    Route::get("/settings/imap", [\App\Http\Controllers\ImapSettingsController::class, "edit"])->name("settings.imap.edit");
+    94	    Route::put("/settings/imap", [\App\Http\Controllers\ImapSettingsController::class, "update"])->name("settings.imap.update");
+    95	});
+    96	
+    97	Route::middleware(['auth'])->group(function () {
+    98	    Route::put('/settings/imap', [\App\Http\Controllers\ImapSettingsController::class, 'update'])->name('settings.imap.update');
+    99	});
+   100	
+   101	Route::middleware(['auth'])->group(function () {
+   102	});
+   103	
+   104	Route::middleware(['auth'])->group(function () {
+   105	});
+   106	
+   107	Route::middleware(['auth'])->group(function () {
+   108	    // Save (PUT remains as-is elsewhere)
+   109	    // Test & Fetch: allow POST or PUT so they work from the single form with _method=PUT
+   110	});
+   111	
+   112	Route::middleware(['auth'])->group(function () {
+   113	    Route::match(['POST','PUT'], '/settings/imap/test',  [\App\Http\Controllers\ImapSettingsController::class, 'test'])->name('settings.imap.test');
+   114	    Route::match(['POST','PUT'], '/settings/imap/fetch', [\App\Http\Controllers\ImapSettingsController::class, 'fetchFolders'])->name('settings.imap.fetch');
+   115	});
+   116	
+   117	
+   118	// === Countries & Networks (top-level) ===
+   119	Route::middleware(["auth"])->group(function () {
+   120	    Route::get("/countries", [\App\Http\Controllers\CountriesController::class, "index"])->name("countries.index");
+
+---- carriers/import lines in routes/web.php ----
+143:   143	    Route::view('/carriers/import', 'carriers.import')->name('carriers.import.form');
+145:   145	        '/carriers/import',
+
+=== END ===

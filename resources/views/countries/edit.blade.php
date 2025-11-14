@@ -1,35 +1,22 @@
+{{-- MCCS_NORMALIZER_ROUND19 --}}
+@php
+    // Normalize $mccs to a Collection regardless of what the controller passed.
+    // Then prepare a safe, de-duplicated printable string.
+    $mccs = collect($mccs ?? ($country->mccs ?? []));
+    $mccs_list = $mccs->pluck('mcc')->filter()->unique()->values();
+    $mccs_str = $mccs_list->implode(', ');
+@endphp
+
 <x-app-layout>
   <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Country</h2></x-slot>
-  <div class="py-6 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-    <form method="POST" action="{{ route('countries.update',$country) }}" class="space-y-4">
-      @csrf @method('PUT')
-      <div>
-        <label class="block text-sm font-medium">Name</label>
-        <input name="name" class="mt-1 w-full rounded border px-3 py-2" value="{{ $country->name }}" required>
-      </div>
-      <div>
-        <label class="block text-sm font-medium">ISO2</label>
-        <input name="iso2" maxlength="2" class="mt-1 w-28 rounded border px-3 py-2" value="{{ $country->iso2 }}">
-      </div>
-      <div>
-        <label class="block text-sm font-medium">MCCs (comma separated)</label>
-        <input name="mccs_raw" class="mt-1 w-full rounded border px-3 py-2" value="{{ implode(', ', $mccs) }}">
-      </div>
-      <script>
-        document.addEventListener('DOMContentLoaded',()=> {
-          const f=document.forms[0];
-          f.addEventListener('submit', ()=>{
-            const raw=(f.mccs_raw.value||'').split(',').map(s=>s.trim()).filter(Boolean);
-            raw.forEach(v=>{
-              const i=document.createElement('input'); i.type='hidden'; i.name='mccs[]'; i.value=v; f.appendChild(i);
-            });
-          });
-        });
-      </script>
-      <div class="flex gap-2">
-        <button class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Save</button>
-        <a href="{{ route('countries.index') }}" class="rounded px-4 py-2 bg-gray-200 hover:bg-gray-300">Cancel</a>
-      </div>
-    </form>
+  <div class="py-6 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white rounded-lg p-4 border space-y-3">
+      <div><span class="font-medium">Country:</span> {{ $country->name }}</div>
+      <div><span class="font-medium">ISO2:</span> {{ strtoupper($country->iso2) }}</div>
+      <div><span class="font-medium">MCCs:</span> {{ $mccs->pluck('mcc')->implode(', ') }}</div>
+    </div>
+    <div class="mt-4">
+      <a href="{{ route('countries.index') }}" class="rounded border px-4 py-2 bg-white hover:bg-gray-50">Back</a>
+    </div>
   </div>
 </x-app-layout>

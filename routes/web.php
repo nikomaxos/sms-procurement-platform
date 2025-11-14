@@ -6,6 +6,8 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ImapSettingsController;
 use App\Http\Controllers\DropDownController;
 
+Route::get('/healthz', fn() => response('ok', 200));
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -133,4 +135,14 @@ Route::middleware(["auth"])->group(function () {
 
 
 // === Carriers Import (UI trigger) ===
-Route::middleware(["auth"])->post("/carriers/import", [\App\Http\Controllers\CarriersImportController::class, "run"])->name("carriers.import");
+
+use App\Http\Controllers\CarriersImportController;
+
+// ---- Carriers import routes (round18 fixed) ----
+Route::middleware(['auth'])->group(function () {
+    Route::view('/carriers/import', 'carriers.import')->name('carriers.import.form');
+    Route::post(
+        '/carriers/import',
+        [\App\Http\Controllers\CarriersImportController::class, 'run']
+    )->name('carriers.import');
+});
