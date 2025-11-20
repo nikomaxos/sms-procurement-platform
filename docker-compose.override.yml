@@ -1,6 +1,7 @@
 services:
+  postgres:
+    restart: unless-stopped
   app:
-    environment:
-      APP_KEY: ${APP_KEY}
-    volumes:
-      - ./.env:/var/www/html/.env:ro
+    restart: unless-stopped
+  web:
+    restart: unless-stopped
