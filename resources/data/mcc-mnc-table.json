@@ -1,0 +1,7 @@
+[
+  {"mcc":"202","mnc":"01","country":"Greece","iso":"gr","brand":"Cosmote"},
+  {"mcc":"202","mnc":"05","country":"Greece","iso":"gr","brand":"Vodafone"},
+  {"mcc":"202","mnc":"10","country":"Greece","iso":"gr","brand":"Nova"},
+  {"mcc":"204","mnc":"04","country":"Netherlands","iso":"nl","brand":"Vodafone"},
+  {"mcc":"204","mnc":"08","country":"Netherlands","iso":"nl","brand":"KPN"}
+]

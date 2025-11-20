@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\NetworkDedupController;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -18,7 +19,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
 
     // Settings hub + subpages
-    Route::get('/settings/imap', [ImapSettingsController::class, 'edit'])->middleware('admin') ->name('settings.imap.edit');
+    Route::get('/settings/imap', [ImapSettingsController::class, 'edit'])->middleware(\App\Http\Middleware\AdminOnly::class) ->name('settings.imap.edit');
 
     // Profile management (if Breeze profile controller exists)
     if (class_exists(ProfileController::class)) {
@@ -121,7 +122,6 @@ Route::middleware(["auth"])->group(function () {
     Route::get("/countries/create", [\App\Http\Controllers\CountriesController::class, "create"])->name("countries.create");
     Route::post("/countries", [\App\Http\Controllers\CountriesController::class, "store"])->name("countries.store");
     Route::get("/countries/{country}/edit", [\App\Http\Controllers\CountriesController::class, "edit"])->name("countries.edit");
-    Route::put("/countries/{country}", [\App\Http\Controllers\CountriesController::class, "update"])->name("countries.update");
     Route::delete("/countries/{country}", [\App\Http\Controllers\CountriesController::class, "destroy"])->name("countries.destroy");
     Route::get("/countries/lookup", [\App\Http\Controllers\CountriesController::class, "lookup"])->name("countries.lookup");
 
@@ -145,4 +145,44 @@ Route::middleware(['auth'])->group(function () {
         '/carriers/import',
         [\App\Http\Controllers\CarriersImportController::class, 'run']
     )->name('carriers.import');
+});
+
+// === MCC/MNC management (Step2) ===
+use App\Http\Controllers\CountryMccController;
+use App\Http\Controllers\NetworkMncController;
+
+Route::middleware(['auth'])->group(function () {
+    // Country MCCs (unique MCC globally; reassignment allowed)
+    Route::post('/countries/{country}/mccs', [CountryMccController::class, 'store'])->name('countries.mccs.store');
+    Route::delete('/countries/{country}/mccs/{mcc}', [CountryMccController::class, 'destroy'])->name('countries.mccs.destroy');
+
+    // Network MCC/MNC pairs (unique pair globally; reassignment allowed)
+    Route::post('/networks/{network}/mncs', [NetworkMncController::class, 'store'])->name('networks.mncs.store');
+    Route::delete('/networks/{network}/mncs/{mcc}/{mnc}', [NetworkMncController::class, 'destroy'])->name('networks.mncs.destroy');
+});
+
+// ---- override countries.update to use CountryUpdateProxy ----
+Route::middleware(['auth'])->group(function () {
+    Route::put('/countries/{country}', [\App\Http\Controllers\CountryUpdateProxy::class, '__invoke'])
+        ->name('countries.update');
+});
+
+// === API (auth) for country search + mccs ===
+Route::middleware(['auth'])->prefix('api')->group(function () {
+    Route::get('/countries/search', \App\Http\Controllers\Api\CountrySearchController::class);
+    Route::get('/countries/{country}/mccs', \App\Http\Controllers\Api\CountryMccsController::class);
+});
+
+// === Networks Duplicates (admin) ===
+Route::middleware(["auth","admin"])->prefix("networks")->name("networks.")->group(function(){
+    Route::get("/duplicates", [\App\Http\Controllers\NetworkDedupController::class, "index"])->name("duplicates.index");
+    Route::post("/duplicates/merge", [\App\Http\Controllers\NetworkDedupController::class, "merge"])->name("duplicates.merge");
+});
+
+// === Country MCC reassign (admin) ===
+Route::post("/countries/{country}/mccs/reassign", [\App\Http\Controllers\CountryMccController::class, "reassign"])
+    ->middleware(["auth","admin"]) ->name("countries.mccs.reassign");
+Route::middleware(['auth', \App\Http\Middleware\AdminOnly::class])->group(function () {
+    Route::get('networks/duplicates', [NetworkDedupController::class, 'index'])->name('networks.duplicates.index');
+    Route::post('networks/duplicates/merge', [NetworkDedupController::class, 'merge'])->name('networks.duplicates.merge');
 });

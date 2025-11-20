@@ -4,58 +4,127 @@
   </x-slot>
 
   <div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    @if (session('status'))
-      <div class="mb-4 rounded bg-green-50 text-green-700 px-4 py-2">{{ session('status') }}</div>
-    @endif
+    @includeIf('partials.flash_log')
 
-    <div class="mb-4">
-      <a href="{{ route('networks.create') }}"
-         class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
-        Create Network
-      </a>
-    </div>
+    <form method="GET" action="{{ route('networks.index') }}" class="bg-white rounded shadow p-4 mb-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Search name</label>
+          <input class="border rounded w-full p-2" type="text" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="e.g. Cosmote">
+        </div>
 
-    <div class="overflow-x-auto bg-white border rounded-lg">
-      <table class="min-w-full divide-y divide-gray-200">
+        <div>
+          <label class="block text-sm font-medium mb-1">Country</label>
+          <div class="relative">
+            <input id="fi_country" class="border rounded w-full p-2" type="text" autocomplete="off"
+                   placeholder="Type to search..."
+                   value="{{ $filters['country_name'] ?? '' }}">
+            <input type="hidden" name="country_id" id="fi_country_id" value="{{ $filters['country_id'] ?? '' }}">
+            <div id="fi_results" class="hidden absolute z-10 mt-1 w-full bg-white border rounded shadow max-h-64 overflow-auto"></div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Per page</label>
+          <select class="border rounded w-full p-2" name="per_page">
+            @foreach([20,50,100] as $n)
+              <option value="{{ $n }}" @selected(($filters['per_page'] ?? 20)==$n)>{{ $n }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-3 flex flex-wrap gap-2">
+        <button class="rounded bg-blue-600 text-white px-4 py-2" type="submit">Filter</button>
+        <a class="rounded bg-gray-100 px-4 py-2 border" href="{{ route('networks.index') }}">Clear</a>
+        <a class="rounded bg-gray-800 text-white px-4 py-2"
+           href="{{ route('networks.index', array_merge(request()->query(), ['export' => 'csv'])) }}">
+           Export CSV
+        </a>
+      </div>
+    </form>
+
+    <div class="bg-white rounded shadow overflow-x-auto">
+      <table class="min-w-full text-sm">
         <thead class="bg-gray-50">
-          <tr class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            <th class="px-4 py-3">Name</th>
-            <th class="px-4 py-3">Country</th>
-            <th class="px-4 py-3">MCCs</th>
-            <th class="px-4 py-3">MNCs</th>
-            <th class="px-4 py-3">Actions</th>
+          <tr>
+            <th class="text-left px-4 py-2">Name</th>
+            <th class="text-left px-4 py-2">Country</th>
+            <th class="text-left px-4 py-2">MCCs</th>
+            <th class="text-left px-4 py-2">MNCs</th>
+            <th class="text-left px-4 py-2">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
-          @forelse($networks as $net)
-            @php
-              $mccs = optional($net->mncs)->pluck('mcc')->filter()->unique()->implode(', ');
-              $mncs = optional($net->mncs)->pluck('mnc')->filter()->unique()->implode(', ');
-            @endphp
-            <tr class="text-sm">
-              <td class="px-4 py-2">{{ $net->name }}</td>
-              <td class="px-4 py-2">{{ $net->country->name ?? '—' }}</td>
-              <td class="px-4 py-2">{{ $mccs }}</td>
-              <td class="px-4 py-2">{{ $mncs }}</td>
+        <tbody>
+          @foreach ($networks as $n)
+            <tr class="border-t">
+              <td class="px-4 py-2">{{ $n->name }}</td>
+              <td class="px-4 py-2">{{ $n->country->name ?? $n->country_id }}</td>
               <td class="px-4 py-2">
-                <a href="{{ route('networks.edit', $net) }}"
-                   class="text-indigo-600 hover:underline">Edit</a>
-                <form method="POST" action="{{ route('networks.destroy', $net) }}" class="inline"
-                      onsubmit="return confirm('Delete this network?');">
-                  @csrf @method('DELETE')
-                  <button class="text-red-600 hover:underline ml-3" type="submit">Delete</button>
-                </form>
+                @php $mccs = isset($mccsMap[$n->id]) ? explode(",", $mccsMap[$n->id]) : []; @endphp
+                @forelse($mccs as $m)
+                  <span class="inline-block text-xs bg-gray-100 border rounded px-2 py-0.5 mr-1 mb-1">{{ $m }}</span>
+                @empty
+                  <span class="text-gray-400">—</span>
+                @endforelse
+              </td>
+              <td class="px-4 py-2">{{ $n->mncs_count }}</td>
+              <td class="px-4 py-2">
+                <a class="text-blue-700 hover:underline" href="{{ route('networks.edit', $n->id) }}">Edit</a>
               </td>
             </tr>
-          @empty
-            <tr><td class="px-4 py-3 text-gray-500" colspan="5">No networks found.</td></tr>
-          @endforelse
+          @endforeach
         </tbody>
       </table>
     </div>
 
-    <div class="mt-4">
-      {{ method_exists($networks,'links') ? $networks->withQueryString()->links() : '' }}
-    </div>
+    <div class="mt-4">{{ $networks->links() }}</div>
   </div>
+
+  <script>
+  (function(){
+    const root = document;
+    const box = root.getElementById('fi_results');
+    const input = root.getElementById('fi_country');
+    const hidden = root.getElementById('fi_country_id');
+    if(!input || !box) return;
+
+    const show = (rows)=>{
+      box.innerHTML = '';
+      if(!rows || !rows.length){ box.classList.add('hidden'); return; }
+      rows.forEach(r=>{
+        const d = document.createElement('div');
+        const mcc = (r.mccs && r.mccs.length) ? ` (MCC: ${r.mccs.join(', ')})` : '';
+        d.textContent = r.name + mcc;
+        d.className = 'px-3 py-2 hover:bg-gray-50 cursor-pointer';
+        d.addEventListener('click', ()=>{
+          input.value = r.name;
+          hidden.value = r.id;
+          box.classList.add('hidden');
+        });
+        box.appendChild(d);
+      });
+      box.classList.remove('hidden');
+    };
+
+    let last = [];
+    async function search(q){
+      try{
+        const r = await fetch(`/api/countries/search?q=${encodeURIComponent(q)}&limit=20`);
+        if(!r.ok){ box.classList.add('hidden'); return; }
+        last = await r.json();
+        show(last);
+      }catch(_e){ box.classList.add('hidden'); }
+    }
+
+    input.addEventListener('input', e=>{
+      const q = e.target.value.trim();
+      if(!q){ box.classList.add('hidden'); hidden.value = ''; return; }
+      search(q);
+    });
+    input.addEventListener('focus', ()=>{ if(last.length) box.classList.remove('hidden'); });
+    document.addEventListener('click', e=>{ if(!box.contains(e.target) && e.target!==input) box.classList.add('hidden'); });
+    input.addEventListener('keydown', e=>{ if(e.key==='Escape') box.classList.add('hidden'); });
+  })();
+  </script>
 </x-app-layout>

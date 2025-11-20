@@ -1,0 +1,153 @@
+==> Step1c: force our carriers:import + add local fallback (log: logs/step1c_2025-11-14_12-39-48.log)
+==> Disabling legacy carriers:import command classes
+   retired: app/Console/Commands/ImportCarriers.php
+==> Writing App\Services\CarrierImportService (remote + fallback)
+==> Bundling local fallback JSON (resources/data/mcc-mnc-table.json)
+==> Writing our CarriersImport command
+==> Registering our command in Kernel
+No syntax errors detected in app/Services/CarrierImportService.php
+No syntax errors detected in app/Console/Commands/CarriersImport.php
+Generating optimized autoload files
+> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+> @php artisan package:discover --ansi
+
+  [37;44m INFO [39;49m Discovering packages.  
+
+  laravel/breeze [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  laravel/pail [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  laravel/sail [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  laravel/tinker [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  maatwebsite/excel [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  nesbot/carbon [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  nunomaduro/collision [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  nunomaduro/termwind [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+
+Generated optimized autoload files containing 7329 classes
+Description:
+  CarriersImport (service-backed) — uses remote JSON with local fallback, prints JSON summary
+
+Usage:
+  carriers:import [options]
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[42703]: Undefined column: 7 ERROR:  column "lower_name" does not exist
+LINE 1: ...ect * from "networks" where "country_id" = $1 and "lower_nam...
+                                                             ^ (Connection: pgsql, SQL: select * from "networks" where "country_id" = 1 and "lower_name" = a-mobile limit 1)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:824
+    820▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    821▕                 );
+    822▕             }
+    823▕ 
+  ➜ 824▕             throw new QueryException(
+    825▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕             );
+    827▕         }
+    828▕     }
+
+  1   vendor/laravel/framework/src/Illuminate/Database/Connection.php:411
+      PDOException::("SQLSTATE[42703]: Undefined column: 7 ERROR:  column "lower_name" does not exist
+LINE 1: ...ect * from "networks" where "country_id" = $1 and "lower_nam...
+                                                             ^")
+
+  2   vendor/laravel/framework/src/Illuminate/Database/Connection.php:411
+      PDOStatement::execute()
+
+  3   vendor/laravel/framework/src/Illuminate/Database/Connection.php:811
+      Illuminate\Database\Connection::{closure:Illuminate\Database\Connection::select():397}("select * from "networks" where "country_id" = ? and "lower_name" = ? limit 1")
+
+  4   vendor/laravel/framework/src/Illuminate/Database/Connection.php:778
+      Illuminate\Database\Connection::runQueryCallback("select * from "networks" where "country_id" = ? and "lower_name" = ? limit 1", Object(Closure))
+
+  5   vendor/laravel/framework/src/Illuminate/Database/Connection.php:397
+      Illuminate\Database\Connection::run("select * from "networks" where "country_id" = ? and "lower_name" = ? limit 1", Object(Closure))
+
+  6   vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:3188
+      Illuminate\Database\Connection::select("select * from "networks" where "country_id" = ? and "lower_name" = ? limit 1")
+
+  7   vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:3173
+      Illuminate\Database\Query\Builder::runSelect()
+
+  8   vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:3763
+      Illuminate\Database\Query\Builder::{closure:Illuminate\Database\Query\Builder::get():3172}()
+
+  9   vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:3172
+      Illuminate\Database\Query\Builder::onceWithColumns(Object(Closure))
+
+  10  vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:902
+      Illuminate\Database\Query\Builder::get()
+
+  11  vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:884
+      Illuminate\Database\Eloquent\Builder::getModels()
+
+  12  vendor/laravel/framework/src/Illuminate/Database/Concerns/BuildsQueries.php:366
+      Illuminate\Database\Eloquent\Builder::get()
+
+  13  app/Services/CarrierImportService.php:70
+      Illuminate\Database\Eloquent\Builder::first()
+
+  14  vendor/laravel/framework/src/Illuminate/Database/Concerns/ManagesTransactions.php:35
+      App\Services\CarrierImportService::{closure:App\Services\CarrierImportService::import():56}(Object(Illuminate\Database\PostgresConnection))
+
+  15  vendor/laravel/framework/src/Illuminate/Database/DatabaseManager.php:489
+      Illuminate\Database\Connection::transaction(Object(Closure))
+
+  16  vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:363
+      Illuminate\Database\DatabaseManager::__call("transaction")
+
+  17  app/Services/CarrierImportService.php:56
+      Illuminate\Support\Facades\Facade::__callStatic("transaction")
+
+  18  app/Console/Commands/CarriersImport.php:14
+      App\Services\CarrierImportService::import("itu")
+
+  19  vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
+      App\Console\Commands\CarriersImport::handle()
+
+  20  vendor/laravel/framework/src/Illuminate/Container/Util.php:43
+      Illuminate\Container\BoundMethod::{closure:Illuminate\Container\BoundMethod::call():35}()
+
+  21  vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:96
+      Illuminate\Container\Util::unwrapIfClosure(Object(Closure))
+
+  22  vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
+      Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Object(Closure))
+
+  23  vendor/laravel/framework/src/Illuminate/Container/Container.php:836
+      Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), [])
+
+  24  vendor/laravel/framework/src/Illuminate/Console/Command.php:211
+      Illuminate\Container\Container::call()
+
+  25  vendor/symfony/console/Command/Command.php:318
+      Illuminate\Console\Command::execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+
+  26  vendor/laravel/framework/src/Illuminate/Console/Command.php:180
+      Symfony\Component\Console\Command\Command::run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+
+  27  vendor/symfony/console/Application.php:1073
+      Illuminate\Console\Command::run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  28  vendor/symfony/console/Application.php:356
+      Symfony\Component\Console\Application::doRunCommand(Object(App\Console\Commands\CarriersImport), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  29  vendor/symfony/console/Application.php:195
+      Symfony\Component\Console\Application::doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  30  vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php:197
+      Symfony\Component\Console\Application::run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  31  vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1235
+      Illuminate\Foundation\Console\Kernel::handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  32  artisan:16
+      Illuminate\Foundation\Application::handleCommand(Object(Symfony\Component\Console\Input\ArgvInput))
+
+{
+    "countries": 231,
+    "country_mccs": 0,
+    "networks": 1510,
+    "network_mncs": 0
+}
+==> Step1c complete. See logs/step1c_2025-11-14_12-39-48.log

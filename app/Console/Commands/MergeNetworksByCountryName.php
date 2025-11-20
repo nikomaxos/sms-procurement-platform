@@ -2,35 +2,33 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
+use App\Services\NetworkMergeService;
 
-class MergeNetworksByCountryName extends Command {
-    protected $signature = 'networks:merge-country-name';
-    protected $description = 'Merge duplicate networks per (country_id, lower(name)) and re-home MNCs.';
+class MergeNetworksByCountryName extends Command
+{
+    protected $signature = 'networks:dedupe {--country=} {--dry-run}';
+    protected $description = 'Merge duplicate networks per (country_id, lower(name)). Move MNCs & delete losers.';
 
-    public function handle(): int {
-        $this->info("Scanning duplicates…");
-        $dups = DB::table('networks')
-            ->select('country_id', DB::raw('lower(name) as lname'), DB::raw('array_agg(id order by id) as ids'))
-            ->groupBy('country_id', DB::raw('lower(name)'))
-            ->havingRaw('count(*) > 1')
-            ->get();
+    public function handle(NetworkMergeService $svc)
+    {
+        $country = $this->option('country') ? (int)$this->option('country') : null;
+        $dry     = (bool)$this->option('dry-run');
 
-        foreach ($dups as $d) {
-            $ids = $d->ids;
-            if (!is_array($ids)) $ids = json_decode(str_replace(['{','}'],['[',']'],$ids), true) ?: [];
-            if (count($ids) < 2) continue;
-            $keep = array_shift($ids);
-            $this->info("Merging into #$keep from: ".implode(',', $ids));
-            // Re-home MNCs
-            DB::table('network_mncs')->whereIn('network_id', $ids)->update(['network_id'=>$keep]);
-            // Delete empties
-            DB::table('networks')->whereIn('id', $ids)->delete();
+        $this->info(($dry ? '[DRY-RUN] ' : '') . 'Scanning for duplicate network groups…');
+        $report = $svc->mergeAll($country, $dry);
+
+        $ts = now()->format('Ymd_His');
+        $log = storage_path('logs').'/networks_merge_'.($country ?? 'all')."_{$ts}.log";
+
+        $out  = [];
+        $out[] = json_encode($report, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+        foreach ($report['details'] as $d) {
+            foreach (($d['notes'] ?? []) as $n) $out[] = $n;
         }
+        file_put_contents($log, implode(PHP_EOL, $out).PHP_EOL);
 
-        // Enforce unique index (safe if already exists)
-        DB::statement("CREATE UNIQUE INDEX IF NOT EXISTS uniq_networks_country_lowername ON networks (country_id, lower(name))");
-        $this->info("Done.");
-        return 0;
+        $this->line(implode(PHP_EOL, $out));
+        $this->info("Log: $log");
+        return self::SUCCESS;
     }
 }

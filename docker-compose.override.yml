@@ -1,0 +1,6 @@
+services:
+  app:
+    environment:
+      APP_KEY: ${APP_KEY}
+    volumes:
+      - ./.env:/var/www/html/.env:ro

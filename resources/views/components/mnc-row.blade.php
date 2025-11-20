@@ -1,24 +1,18 @@
-@props(['index'=>null,'m'=>null,'network'=>null])
+@props(['mnc'])
+
 @php
-  $i = $index ?? ($loop->index ?? 0);
-  $mnc = old("mncs.$i.mnc", $m->mnc ?? '');
-  $mcc = $network->mcc ?? ($m->mcc ?? '');
-  $mcc_mnc = ($mcc !== null && $mnc !== '') ? ($mcc.$mnc) : '';
+    $mcc = str_pad((string)($mnc->mcc ?? ''), 3, '0', STR_PAD_LEFT);
+    $mncCode = str_pad((string)($mnc->mnc ?? ''), 3, '0', STR_PAD_LEFT);
+    $src = $mnc->updated_by_source ?? $mnc->created_by_source ?? null;
+    $title = "MCC {$mcc} / MNC {$mncCode}" . ($src ? " — source: {$src}" : "");
 @endphp
-<div class="grid grid-cols-12 gap-2 items-center border-b py-2">
-  <div class="col-span-3">
-    <input name="mncs[{{ $i }}][mnc]" value="{{ $mnc }}" placeholder="MNC" class="w-full border rounded px-2 py-1">
-  </div>
-  <div class="col-span-3">
-    <input value="{{ $mcc }}" class="w-full border rounded px-2 py-1 bg-gray-100" readonly>
-  </div>
-  <div class="col-span-4">
-    <input value="{{ $mcc_mnc }}" class="w-full border rounded px-2 py-1 bg-gray-100" readonly>
-  </div>
-  <div class="col-span-2 text-right">
-    <label class="inline-flex items-center gap-2">
-      <input type="checkbox" name="mncs[{{ $i }}][remove]" value="1">
-      <span>Remove</span>
-    </label>
-  </div>
-</div>
+
+<span
+  class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-white text-gray-700 text-xs"
+  title="{{ $title }}"
+>
+  <span class="font-mono">{{ $mcc }}-{{ $mncCode }}</span>
+  @if($src)
+    <span class="opacity-60">({{ $src }})</span>
+  @endif
+</span>

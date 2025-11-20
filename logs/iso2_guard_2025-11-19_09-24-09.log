@@ -1,0 +1,25 @@
+
+==> [DB] Install ISO2 guard, normalize data, enforce invariants
+BEGIN
+ALTER TABLE
+CREATE FUNCTION
+DROP TRIGGER
+CREATE TRIGGER
+UPDATE 229
+UPDATE 0
+DROP TABLE
+psql:<stdin>:31: NOTICE:  table "_dups" does not exist, skipping
+SELECT 0
+UPDATE 0
+DELETE 0
+DO
+ALTER TABLE
+psql:<stdin>:65: NOTICE:  relation "countries_iso2_unique_idx" already exists, skipping
+CREATE INDEX
+UPDATE 1
+COMMIT
+BEGIN
+psql:<stdin>:80: ERROR:  duplicate key value violates unique constraint "countries_iso2_unique_idx"
+DETAIL:  Key (iso2)=(ZZ) already exists.
+
+[ERROR] Database step failed. See log: logs/iso2_guard_2025-11-19_09-24-09.log

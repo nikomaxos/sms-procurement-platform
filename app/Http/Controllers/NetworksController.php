@@ -1,27 +1,100 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use App\Models\Network;
-use App\Models\NetworkMnc;
+use App\Models\Country;
 
 class NetworksController extends Controller
 {
-    public function index(Request $r)
+    public function index(Request $request)
     {
-        $per = (int) $r->input('per', 20);
-        if (!in_array($per,[20,50,100,1000])) $per = 20;
+        $q         = trim((string) $request->query('q',''));
+        $countryId = $request->query('country_id');
+        $perPage   = (int) $request->query('per_page', 20);
+        if ($perPage < 5)  { $perPage = 5; }
+        if ($perPage > 100){ $perPage = 100; }
 
-        $q = Network::query()->with(['country','mncs'=>fn($qq)=>$qq->orderBy('mnc')]);
+        $query = Network::query()
+            ->with('country')
+            ->withCount('mncs')
+            ->orderBy('name');
 
-        if ($r->filled('q'))       $q->where('name','ilike','%'.$r->q.'%');
-        if ($r->filled('country')) $q->whereHas('country', fn($c)=>$c->where('name','ilike','%'.$r->country.'%'));
-        if ($r->filled('mcc'))     $q->whereHas('mncs', fn($m)=>$m->where('mcc',$r->mcc));
-        if ($r->filled('mnc'))     $q->whereHas('mncs', fn($m)=>$m->where('mnc',$r->mnc));
-        if ($r->filled('mcc_mnc')) $q->whereHas('mncs', fn($m)=>$m->where('mcc_mnc','ilike','%'.$r->mcc_mnc.'%'));
+        if ($q !== '') {
+            // Postgres case-insensitive search
+            $query->where('name','ilike', "%{$q}%");
+        }
+        if (!empty($countryId)) {
+            $query->where('country_id', $countryId);
+        }
 
-        $networks = $q->orderBy('name','asc')->paginate($per)->appends($r->all());
-        return view('networks.index', compact('networks'));
+        // CSV export (respects filters)
+        if ($request->query('export') === 'csv') {
+            $rows = $query->get(['id','country_id','name']);
+
+            $map = DB::table('network_mncs')
+                ->select([
+                    'network_id',
+                    DB::raw("string_agg(DISTINCT mcc::text, ',' ORDER BY mcc::text) as mccs"),
+                    DB::raw("string_agg((mcc::text||'-'||mnc::text), ',' ORDER BY mcc,mnc) as pairs"),
+                    DB::raw('count(*) as mnc_count')
+                ])
+                ->whereIn('network_id', $rows->pluck('id'))
+                ->groupBy('network_id')
+                ->get()
+                ->keyBy('network_id');
+
+            $countries = DB::table('countries')
+                ->whereIn('id', $rows->pluck('country_id'))
+                ->pluck('name','id');
+
+            $filename = 'networks_export_'.date('Ymd_His').'.csv';
+            return response()->streamDownload(function() use ($rows,$map,$countries){
+                $out = fopen('php://output','w');
+                fputcsv($out, ['Network ID','Name','Country','MCCs','MNC count','MCC-MNC pairs']);
+                foreach ($rows as $r) {
+                    $a = $map[$r->id] ?? null;
+                    fputcsv($out, [
+                        $r->id,
+                        $r->name,
+                        $countries[$r->country_id] ?? $r->country_id,
+                        $a->mccs ?? '',
+                        $a->mnc_count ?? 0,
+                        $a->pairs ?? ''
+                    ]);
+                }
+                fclose($out);
+            }, $filename, [
+                'Content-Type'  => 'text/csv',
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            ]);
+        }
+
+        $networks = $query->paginate($perPage)->appends($request->query());
+
+        // light MCC aggregation for current page
+        $ids = $networks->getCollection()->pluck('id');
+        $mccsMap = DB::table('network_mncs')
+            ->select('network_id', DB::raw("string_agg(DISTINCT mcc::text, ',' ORDER BY mcc::text) as mccs"))
+            ->whereIn('network_id', $ids)
+            ->groupBy('network_id')
+            ->pluck('mccs','network_id');
+
+        $filters = [
+            'q'            => $q,
+            'country_id'   => $countryId,
+            'country_name' => $countryId ? (DB::table('countries')->where('id',$countryId)->value('name') ?? '') : '',
+            'per_page'     => $perPage,
+        ];
+
+        return view('networks.index', [
+            'networks' => $networks,
+            'mccsMap'  => $mccsMap,
+            'filters'  => $filters,
+        ]);
     }
 
     public function create()
@@ -30,65 +103,58 @@ class NetworksController extends Controller
         return view('networks.create', compact('network'));
     }
 
-    public function edit(Network $network)
+    public function store(Request $request)
     {
-        $network->load(['mncs','country.mccs']);
-        $primaryMcc = $network->mncs->pluck('mcc')->filter()->first()
-            ?? optional($network->country?->mccs->first())->mcc
-            ?? '';
-        return view('networks.edit', compact('network','primaryMcc'));
-    }
-
-    public function store(Request $r)
-    {
-        $data = $r->validate([
-            'name'=>'required|string',
-            'country_id'=>'required|integer'
+        $data = $request->validate([
+            'country_id' => 'required|integer|exists:countries,id',
+            'name'       => 'required|string|max:255',
         ]);
-        $n = new Network($data);
-        $n->save();
-        return redirect()->route('networks.edit',$n)->with('status','Created.');
-    }
 
-    public function update(Request $r, Network $network)
-    {
-        $network->name = trim((string)$r->input('name',$network->name));
+        $network = new Network();
+        $network->country_id = (int)$data['country_id'];
+        $network->name       = $data['name'];
+        // keep lower_name consistent with unique index
+        if (schema_has_column('networks','lower_name')) {
+            $network->lower_name = Str::lower($data['name']);
+        }
         $network->save();
 
-        $network->load(['mncs','country.mccs']);
-        $primaryMcc = $network->mncs->pluck('mcc')->filter()->first()
-            ?? optional($network->country?->mccs->first())->mcc
-            ?? '';
-
-        $mncs = (array) $r->input('mncs', []);
-        $toDelete = array_map('intval', array_keys((array)$r->input('delete_mncs', [])));
-        if ($toDelete) {
-            NetworkMnc::where('network_id',$network->id)->whereIn('id',$toDelete)->delete();
-        }
-
-        foreach ($mncs as $row) {
-            $id  = isset($row['id']) ? (int)$row['id'] : null;
-            $mnc = trim((string)($row['mnc'] ?? ''));
-            if ($mnc==='') continue;
-
-            $nm = $id
-                ? NetworkMnc::where('network_id',$network->id)->where('id',$id)->first()
-                : new NetworkMnc();
-
-            if (!$nm) $nm = new NetworkMnc();
-            $nm->network_id = $network->id;
-            $nm->mcc = (string)$primaryMcc;
-            $nm->mnc = $mnc;
-            $nm->mcc_mnc = ((string)$primaryMcc).$mnc;
-            $nm->save();
-        }
-
-        return redirect()->route('networks.edit',$network)->with('status','Saved.');
+        return redirect()->route('networks.edit', $network->id)->with('status','Network created.');
     }
 
-    public function destroy(Network $network)
+    public function edit(Network $network)
     {
-        $network->delete();
-        return back()->with('status','Deleted.');
+        $network->load('country','mncs');
+        return view('networks.edit', compact('network'));
+    }
+
+    public function update(Request $request, Network $network)
+    {
+        $data = $request->validate([
+            'country_id' => 'required|integer|exists:countries,id',
+            'name'       => 'required|string|max:255',
+        ]);
+
+        $network->country_id = (int)$data['country_id'];
+        $network->name       = $data['name'];
+        if (schema_has_column('networks','lower_name')) {
+            $network->lower_name = Str::lower($data['name']);
+        }
+        $network->save();
+
+        return back()->with('status','Network saved.');
+    }
+}
+
+/**
+ * Tiny helper: check if a column exists (Postgres-safe).
+ */
+if (!function_exists('schema_has_column')) {
+    function schema_has_column(string $table, string $column): bool {
+        try {
+            return \Illuminate\Support\Facades\Schema::hasColumn($table, $column);
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 }

@@ -7,14 +7,12 @@ use App\Services\CarrierImportService;
 class CarriersImport extends Command
 {
     protected $signature = 'carriers:import {--source=itu} {--fresh}';
-    protected $description = 'Import carriers/MNCs from public dataset (best-effort).';
+    protected $description = 'CarriersImport (service-backed) — uses remote JSON with local fallback, prints JSON summary';
 
-    public function handle()
-    {
-        $source = strtolower((string)$this->option('source'));
-        $fresh  = (bool)$this->option('fresh');
-        [$ok,$msg] = (new CarrierImportService())->import($source, $fresh);
-        $this->line($msg);
-        return $ok ? self::SUCCESS : self::FAILURE;
+    public function handle(): int {
+        $svc = new CarrierImportService();
+        $res = $svc->import((string)$this->option('source'), (bool)$this->option('fresh'));
+        $this->line(json_encode($res, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        return $res['ok'] ? Command::SUCCESS : Command::FAILURE;
     }
 }

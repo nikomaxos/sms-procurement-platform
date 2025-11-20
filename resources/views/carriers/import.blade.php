@@ -1,23 +1,85 @@
-<x-app-layout>
-  <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Import Carriers (ITU)</h2></x-slot>
-  <div class="py-6 max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
-    @if ($errors->any())
-      <div class="mb-4 rounded bg-red-50 text-red-700 px-4 py-2">{{ $errors->first() }}</div>
-    @endif
-    @if (session('status'))
-      <div class="mb-4 rounded bg-green-50 text-green-700 px-4 py-2">{{ session('status') }}</div>
-    @endif
-    <form method="POST" action="{{ route('carriers.import') }}" class="space-y-3 bg-white p-4 border rounded">
-      @csrf
-      <label class="block text-sm text-gray-700">Source</label>
-      <select name="source" class="rounded border px-3 py-2">
-        <option value="itu" selected>ITU JSON (github raw)</option>
-      </select>
-      <label class="inline-flex items-center gap-2"><input type="checkbox" name="fresh" value="1"> <span>Fresh (truncate links)</span></label>
-      <div class="flex items-center gap-3">
-        <button class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">Run Import</button>
-        <a href="{{ route('networks.index') }}" class="rounded border px-4 py-2 bg-white hover:bg-gray-50">Back</a>
+@extends('layouts.app')
+
+@section('content')
+<div class="max-w-3xl mx-auto p-6">
+  <h1 class="text-2xl font-semibold mb-4">Carriers Import</h1>
+
+  @if ($errors->any())
+    <div class="mb-4 rounded border border-red-300 bg-red-50 p-3 text-red-800">
+      <ul class="list-disc ms-5">
+        @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+    </div>
+  @endif
+
+  @if (session('error'))
+    <div class="mb-4 rounded border border-red-300 bg-red-50 p-3 text-red-800">
+      {{ session('error') }}
+    </div>
+  @endif
+
+  @if (session('status'))
+    <div class="mb-4 rounded border border-green-300 bg-green-50 p-3 text-green-800">
+      {{ session('status') }}
+    </div>
+  @endif
+
+  @php($summary = session('summary'))
+  @if ($summary)
+    <div class="mb-6 rounded border p-4 bg-white">
+      <div class="font-medium mb-2">Summary</div>
+      <dl class="grid grid-cols-2 gap-2 text-sm">
+        <div><dt class="text-gray-500">Source</dt><dd class="font-medium">{{ $summary['source'] ?? 'auto' }}</dd></div>
+        <div><dt class="text-gray-500">Fresh</dt><dd class="font-medium">{{ !empty($summary['fresh']) ? 'Yes' : 'No' }}</dd></div>
+        <div><dt class="text-gray-500">Countries created</dt><dd class="font-medium">{{ $summary['createdCountries'] ?? 0 }}</dd></div>
+        <div><dt class="text-gray-500">Networks created</dt><dd class="font-medium">{{ $summary['createdNetworks'] ?? 0 }}</dd></div>
+        <div><dt class="text-gray-500">MNC links created</dt><dd class="font-medium">{{ $summary['createdMncs'] ?? 0 }}</dd></div>
+        <div class="col-span-2"><dt class="text-gray-500">Message</dt><dd class="font-medium">{{ $summary['msg'] ?? '' }}</dd></div>
+      </dl>
+      <div class="mt-3 text-sm">
+        <a class="underline text-blue-700" href="{{ route('countries.index') }}">Countries</a>
+        &nbsp;·&nbsp;
+        <a class="underline text-blue-700" href="{{ route('networks.index') }}">Networks</a>
       </div>
-    </form>
-  </div>
-</x-app-layout>
+    </div>
+  @endif
+
+  <form method="POST" action="{{ route('carriers.import') }}" class="rounded border p-4 bg-white">
+    @csrf
+
+    <div class="mb-4">
+      <label for="source" class="block text-sm font-medium mb-1">Data source</label>
+      <select id="source" name="source" class="w-full border rounded p-2">
+        <option value="auto" {{ old('source','auto')==='auto' ? 'selected' : '' }}>Auto (try remote, fallback local)</option>
+        <option value="itu"  {{ old('source')==='itu' ? 'selected' : '' }}>Remote JSON (onomondo/ITU)</option>
+        <option value="local" {{ old('source')==='local' ? 'selected' : '' }}>Local bundled fallback</option>
+      </select>
+      <p class="text-xs text-gray-500 mt-1">Auto fetches remote JSON; if unreachable, it uses the local bundled table.</p>
+    </div>
+
+    <div class="mb-4">
+      <label class="inline-flex items-center gap-2">
+        <input type="checkbox" name="fresh" value="1" {{ old('fresh') ? 'checked' : '' }}>
+        <span class="text-sm font-medium">Clear existing MCC/MNC links first (“fresh”)</span>
+      </label>
+      <p class="text-xs text-gray-500 ms-6">
+        This clears <code>country_mccs</code> and <code>network_mncs</code> only (countries/networks are kept).
+      </p>
+    </div>
+
+    <div class="mb-6">
+      <label class="inline-flex items-center gap-2">
+        <input type="checkbox" name="fresh_confirm" value="1" {{ old('fresh_confirm') ? 'checked' : '' }}>
+        <span class="text-sm">I understand the clearing step. (Required if “fresh” is ticked.)</span>
+      </label>
+    </div>
+
+    <button type="submit" class="px-4 py-2 rounded bg-blue-600 text-white font-medium">
+      Run import
+    </button>
+    <p class="text-xs text-gray-500 mt-2">If you click twice quickly, the action is locked for 60s to avoid duplicates.</p>
+  </form>
+</div>
+@endsection

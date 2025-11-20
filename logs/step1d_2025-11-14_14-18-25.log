@@ -1,0 +1,160 @@
+==> Step1d: add networks.lower_name (if missing) + make importer schema-aware
+No syntax errors detected in app/Services/CarrierImportService.php
+Generating optimized autoload files
+> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+> @php artisan package:discover --ansi
+
+  [37;44m INFO [39;49m Discovering packages.  
+
+  laravel/breeze [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  laravel/pail [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  laravel/sail [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  laravel/tinker [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  maatwebsite/excel [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  nesbot/carbon [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  nunomaduro/collision [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+  nunomaduro/termwind [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+
+Generated optimized autoload files containing 7329 classes
+
+   INFO  Running migrations.  
+
+  2025_11_14_000210_add_lower_name_to_networks .................. 69.09ms DONE
+
+
+   Illuminate\Database\UniqueConstraintViolationException 
+
+  SQLSTATE[23505]: Unique violation: 7 ERROR:  duplicate key value violates unique constraint "uniq_networks_country_lowername"
+DETAIL:  Key (country_id, lower(name::text))=(1, a-mobile) already exists. (Connection: pgsql, SQL: insert into "networks" ("country_id", "name", "updated_at", "created_at") values (1, A-Mobile, 2025-11-14 12:18:29, 2025-11-14 12:18:29) returning "id")
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:819
+    815▕         // message to include the bindings with SQL, which will make this exception a
+    816▕         // lot more helpful to the developer instead of just the database's errors.
+    817▕         catch (Exception $e) {
+    818▕             if ($this->isUniqueConstraintError($e)) {
+  ➜ 819▕                 throw new UniqueConstraintViolationException(
+    820▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    821▕                 );
+    822▕             }
+    823▕
+
+  1   vendor/laravel/framework/src/Illuminate/Database/Connection.php:411
+      PDOException::("SQLSTATE[23505]: Unique violation: 7 ERROR:  duplicate key value violates unique constraint "uniq_networks_country_lowername"
+DETAIL:  Key (country_id, lower(name::text))=(1, a-mobile) already exists.")
+
+  2   vendor/laravel/framework/src/Illuminate/Database/Connection.php:411
+      PDOStatement::execute()
+
+  3   vendor/laravel/framework/src/Illuminate/Database/Connection.php:811
+      Illuminate\Database\Connection::{closure:Illuminate\Database\Connection::select():397}("insert into "networks" ("country_id", "name", "updated_at", "created_at") values (?, ?, ?, ?) returning "id"")
+
+  4   vendor/laravel/framework/src/Illuminate/Database/Connection.php:778
+      Illuminate\Database\Connection::runQueryCallback("insert into "networks" ("country_id", "name", "updated_at", "created_at") values (?, ?, ?, ?) returning "id"", Object(Closure))
+
+  5   vendor/laravel/framework/src/Illuminate/Database/Connection.php:397
+      Illuminate\Database\Connection::run("insert into "networks" ("country_id", "name", "updated_at", "created_at") values (?, ?, ?, ?) returning "id"", Object(Closure))
+
+  6   vendor/laravel/framework/src/Illuminate/Database/Connection.php:384
+      Illuminate\Database\Connection::select("insert into "networks" ("country_id", "name", "updated_at", "created_at") values (?, ?, ?, ?) returning "id"")
+
+  7   vendor/laravel/framework/src/Illuminate/Database/Query/Processors/PostgresProcessor.php:24
+      Illuminate\Database\Connection::selectFromWriteConnection("insert into "networks" ("country_id", "name", "updated_at", "created_at") values (?, ?, ?, ?) returning "id"")
+
+  8   vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:3853
+      Illuminate\Database\Query\Processors\PostgresProcessor::processInsertGetId(Object(Illuminate\Database\Query\Builder), "insert into "networks" ("country_id", "name", "updated_at", "created_at") values (?, ?, ?, ?) returning "id"", "id")
+
+  9   vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:2235
+      Illuminate\Database\Query\Builder::insertGetId("id")
+
+  10  vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php:1436
+      Illuminate\Database\Eloquent\Builder::__call("insertGetId")
+
+  11  vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php:1401
+      Illuminate\Database\Eloquent\Model::insertAndSetId(Object(Illuminate\Database\Eloquent\Builder), ["A-Mobile", "2025-11-14 12:18:29", "2025-11-14 12:18:29"])
+
+  12  vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php:1240
+      Illuminate\Database\Eloquent\Model::performInsert(Object(Illuminate\Database\Eloquent\Builder))
+
+  13  vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:1219
+      Illuminate\Database\Eloquent\Model::save()
+
+  14  vendor/laravel/framework/src/Illuminate/Support/helpers.php:390
+      Illuminate\Database\Eloquent\Builder::{closure:Illuminate\Database\Eloquent\Builder::create():1218}(Object(App\Models\Network))
+  15  vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:1218
+
+  16  vendor/laravel/framework/src/Illuminate/Support/Traits/ForwardsCalls.php:23
+      Illuminate\Database\Eloquent\Builder::create(["A-Mobile", "a-mobile"])
+
+  17  vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php:2540
+      Illuminate\Database\Eloquent\Model::forwardCallTo(Object(Illuminate\Database\Eloquent\Builder), "create")
+
+  18  vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php:2556
+      Illuminate\Database\Eloquent\Model::__call("create")
+
+  19  app/Services/CarrierImportService.php:80
+      Illuminate\Database\Eloquent\Model::__callStatic("create")
+
+  20  vendor/laravel/framework/src/Illuminate/Database/Concerns/ManagesTransactions.php:35
+      App\Services\CarrierImportService::{closure:App\Services\CarrierImportService::import():52}(Object(Illuminate\Database\PostgresConnection))
+
+  21  vendor/laravel/framework/src/Illuminate/Database/DatabaseManager.php:489
+      Illuminate\Database\Connection::transaction(Object(Closure))
+
+  22  vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:363
+      Illuminate\Database\DatabaseManager::__call("transaction")
+
+  23  app/Services/CarrierImportService.php:52
+      Illuminate\Support\Facades\Facade::__callStatic("transaction")
+
+  24  app/Console/Commands/CarriersImport.php:14
+      App\Services\CarrierImportService::import("itu")
+
+  25  vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
+      App\Console\Commands\CarriersImport::handle()
+
+  26  vendor/laravel/framework/src/Illuminate/Container/Util.php:43
+      Illuminate\Container\BoundMethod::{closure:Illuminate\Container\BoundMethod::call():35}()
+
+  27  vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:96
+      Illuminate\Container\Util::unwrapIfClosure(Object(Closure))
+
+  28  vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
+      Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Object(Closure))
+
+  29  vendor/laravel/framework/src/Illuminate/Container/Container.php:836
+      Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), [])
+
+  30  vendor/laravel/framework/src/Illuminate/Console/Command.php:211
+      Illuminate\Container\Container::call()
+
+  31  vendor/symfony/console/Command/Command.php:318
+      Illuminate\Console\Command::execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+
+  32  vendor/laravel/framework/src/Illuminate/Console/Command.php:180
+      Symfony\Component\Console\Command\Command::run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+
+  33  vendor/symfony/console/Application.php:1073
+      Illuminate\Console\Command::run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  34  vendor/symfony/console/Application.php:356
+      Symfony\Component\Console\Application::doRunCommand(Object(App\Console\Commands\CarriersImport), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  35  vendor/symfony/console/Application.php:195
+      Symfony\Component\Console\Application::doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  36  vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php:197
+      Symfony\Component\Console\Application::run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  37  vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1235
+      Illuminate\Foundation\Console\Kernel::handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+  38  artisan:16
+      Illuminate\Foundation\Application::handleCommand(Object(Symfony\Component\Console\Input\ArgvInput))
+
+{
+    "countries": 231,
+    "country_mccs": 0,
+    "networks": 1510,
+    "network_mncs": 0
+}
+==> Step1d complete. Log: logs/step1d_2025-11-14_14-18-25.log

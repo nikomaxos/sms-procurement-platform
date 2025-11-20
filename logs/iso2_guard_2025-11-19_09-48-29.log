@@ -1,0 +1,49 @@
+
+==> [DB] Install ISO2 guard, normalize data, enforce invariants
+BEGIN
+ALTER TABLE
+CREATE FUNCTION
+DROP TRIGGER
+CREATE TRIGGER
+UPDATE 229
+UPDATE 0
+DROP TABLE
+psql:<stdin>:31: NOTICE:  table "_dups" does not exist, skipping
+SELECT 0
+UPDATE 0
+DELETE 0
+DO
+ALTER TABLE
+CREATE INDEX
+psql:<stdin>:64: NOTICE:  relation "countries_iso2_unique_idx" already exists, skipping
+UPDATE 1
+COMMIT
+BEGIN
+          result          
+--------------------------
+ Self-test stored iso2=ZZ
+(1 row)
+
+ROLLBACK
+
+=== REPORT ===
+ countries 
+-----------
+       229
+(1 row)
+
+ networks 
+----------
+     1877
+(1 row)
+
+ id  |     name      | iso2 
+-----+---------------+------
+ 287 | International | ZZ
+(1 row)
+
+ id | name | iso2 
+----+------+------
+(0 rows)
+
+[OK] Database guard + normalize completed
