@@ -8,7 +8,13 @@ use App\Services\CarrierImportService;
 
 class CarriersImportController extends Controller
 {
-    /**
+    
+    public function __construct()
+    {
+        $this->middleware(['auth', 'admin']);
+    }
+
+/**
      * POST /carriers/import
      */
     public function run(Request $request, CarrierImportService $svc)
