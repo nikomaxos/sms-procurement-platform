@@ -110,3 +110,8 @@
 </div>
 </div>
 </nav>
+
+{{-- Auto-added: Carriers Import link in Settings menu --}}
+<x-dropdown-link href="{{ url('/carriers/import') }}">
+    Carriers Import
+</x-dropdown-link>

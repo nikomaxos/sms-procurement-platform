@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\MccMncNormalizer;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -31,4 +33,9 @@ class NetworkMnc extends Model
         $mnc = str_pad((string)$this->mnc, 3, '0', STR_PAD_LEFT);
         return $mcc.$mnc;
     }
-}
+
+                public function setMccMncAttribute(): void
+                {
+                    ->attributes["mcc_mnc"] = MccMncNormalizer::normalize((string) );
+                }
+            }
