@@ -1,5 +1,0 @@
-==> Running make_release_tag_v1.sh at 2025-11-22_12-36-58
-ROOT_DIR: /home/user/sms-procurement-platform
-LOG_FILE: /home/user/sms-procurement-platform/logs/make_release_tag_2025-11-22_12-36-58.log
-==> Remote origin: https://github.com/nikomaxos/sms-procurement-platform.git
-ERROR: Working tree is not clean. Commit or stash changes before tagging.

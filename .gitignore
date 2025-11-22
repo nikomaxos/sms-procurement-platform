@@ -21,3 +21,4 @@ database/migrations/_bak/
 /storage/logs/
 /bootstrap/cache/*
 *.bak.*
+logs/
