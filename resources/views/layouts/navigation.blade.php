@@ -1,4 +1,9 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+    @php
+        $user = auth()->user();
+        $isAdmin = $user && $user->usertype === 'admin';
+    @endphp
+
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -11,7 +16,7 @@
                 </div>
 
                 <!-- Navigation Links (left / basic menu) -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -24,51 +29,55 @@
                         {{ __('Networks') }}
                     </x-nav-link>
 
-                    @if(auth()->check() && auth()->user()->usertype === 'admin')
-                        <!-- Settings dropdown (hover) -->
+                    <!-- Settings dropdown (hover) -->
+                    @auth
                         <div
                             x-data="{ openSettings: false }"
                             @mouseenter="openSettings = true"
                             @mouseleave="openSettings = false"
-                            class="relative"
+                            class="relative flex items-center"
                         >
-                            <button
-                                type="button"
-                                class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition"
-                            >
-                                <span>{{ __('Settings') }}</span>
-                                <svg class="ms-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
+                            <x-nav-link href="#"
+                                :active="request()->routeIs('settings.*') || request()->is('carriers/import') || request()->routeIs('users.*')">
+                                <span class="inline-flex items-center">
+                                    {{ __('Settings') }}
+                                    <svg class="ms-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                         fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd"
+                                              d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"
+                                              clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </x-nav-link>
 
                             <div
                                 x-cloak
                                 x-show="openSettings"
-                                x-transition.origin.top.left
-                                class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                                x-transition
+                                class="absolute z-50 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
                             >
-                                <div class="py-1">
-                                    <a href="{{ route('settings.dropdowns.index') }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <div class="py-1 text-sm text-gray-700">
+                                    <a href="{{ route('settings.dropdowns.index') }}" class="block px-4 py-2 hover:bg-gray-100">
                                         {{ __('Drop Down Menus') }}
                                     </a>
-                                    <a href="{{ route('settings.imap.edit') }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <a href="{{ route('settings.imap.edit') }}" class="block px-4 py-2 hover:bg-gray-100">
                                         {{ __('IMAP Settings') }}
                                     </a>
-                                    <a href="{{ url('/carriers/import') }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        {{ __('Carriers Import') }}
-                                    </a>
-                                    <a href="{{ route('users.index') }}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        {{ __('Users Management') }}
-                                    </a>
+                                    @if($isAdmin)
+                                        <a href="{{ url('/carriers/import') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                            {{ __('Carriers Import') }}
+                                        </a>
+
+                                        @if (\Illuminate\Support\Facades\Route::has('users.index'))
+                                            <a href="{{ route('users.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                                {{ __('Users Management') }}
+                                            </a>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    @endauth
                 </div>
             </div>
 
@@ -76,12 +85,18 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button
+                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium
+                                   rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none
+                                   transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
 
                             <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                          clip-rule="evenodd" />
                                 </svg>
                             </div>
                         </button>
@@ -97,8 +112,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                                onclick="event.preventDefault(); this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
@@ -108,10 +122,17 @@
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-400
+                               hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100
+                               focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
+                              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden"
+                              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
@@ -133,11 +154,11 @@
                 {{ __('Networks') }}
             </x-responsive-nav-link>
 
-            @if(auth()->check() && auth()->user()->usertype === 'admin')
-                <div class="mt-2 border-t border-gray-200 pt-2">
-                    <div class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            @auth
+                <div class="border-t border-gray-200 mt-2 pt-2 space-y-1">
+                    <span class="block px-4 py-2 text-xs font-semibold text-gray-500 uppercase">
                         {{ __('Settings') }}
-                    </div>
+                    </span>
 
                     <x-responsive-nav-link :href="route('settings.dropdowns.index')" :active="request()->routeIs('settings.dropdowns.*')">
                         {{ __('Drop Down Menus') }}
@@ -147,18 +168,22 @@
                         {{ __('IMAP Settings') }}
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="url('/carriers/import')" :active="request()->is('carriers/import')">
-                        {{ __('Carriers Import') }}
-                    </x-responsive-nav-link>
+                    @if($isAdmin)
+                        <x-responsive-nav-link :href="url('/carriers/import')" :active="request()->is('carriers/import')">
+                            {{ __('Carriers Import') }}
+                        </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
-                        {{ __('Users Management') }}
-                    </x-responsive-nav-link>
+                        @if (\Illuminate\Support\Facades\Route::has('users.index'))
+                            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                                {{ __('Users Management') }}
+                            </x-responsive-nav-link>
+                        @endif
+                    @endif
                 </div>
-            @endif
+            @endauth
         </div>
 
-        <!-- Responsive Settings Options (user info + profile/logout) -->
+        <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
@@ -175,8 +200,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                        onclick="event.preventDefault(); this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
