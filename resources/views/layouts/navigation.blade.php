@@ -1,7 +1,10 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     @php
         $user = auth()->user();
-        $isAdmin = $user && $user->usertype === 'admin';
+        $isAdmin = $user && (
+            (!empty($user->is_admin)) ||
+            (($user->usertype ?? null) === 'admin')
+        );
     @endphp
 
     <!-- Primary Navigation Menu -->
@@ -54,7 +57,7 @@
                                 x-cloak
                                 x-show="openSettings"
                                 x-transition
-                                class="absolute z-50 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                                class="absolute left-0 top-full mt-2 z-50 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
                             >
                                 <div class="py-1 text-sm text-gray-700">
                                     <a href="{{ route('settings.dropdowns.index') }}" class="block px-4 py-2 hover:bg-gray-100">

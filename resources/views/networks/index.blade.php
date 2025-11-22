@@ -90,9 +90,9 @@
         @includeIf('partials.flash_log')
 
         <div class="bg-white shadow-sm sm:rounded-lg p-4 space-y-4">
-            {{-- Filters in one row: q, country, mccmnc, non-operational --}}
+            {{-- Filters in one row: q, country, mccmnc, non-operational, actions --}}
             <form method="GET" action="{{ route('networks.index') }}" id="networks-filter-form">
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                     {{-- Search by name (q) --}}
                     <div class="md:col-span-2">
                         <label for="filter_q" class="block text-sm font-medium text-gray-700">
