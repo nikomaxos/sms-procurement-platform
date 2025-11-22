@@ -57,9 +57,6 @@
                             Email
                         </th>
                         <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Products Provided
-                        </th>
-                        <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Notes
                         </th>
                         <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -69,13 +66,6 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($suppliers as $supplier)
-                        @php
-                            $productTypes = $supplier->connections
-                                ->pluck('product_type')
-                                ->filter()
-                                ->unique()
-                                ->values();
-                        @endphp
                         <tr>
                             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
                                 <a href="{{ route('suppliers.show', $supplier) }}"
@@ -85,15 +75,6 @@
                             </td>
                             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
                                 {{ $supplier->email }}
-                            </td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                                @forelse($productTypes as $type)
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700 text-xs mr-1">
-                                        {{ $type }}
-                                    </span>
-                                @empty
-                                    <span class="text-gray-400 text-xs">—</span>
-                                @endforelse
                             </td>
                             <td class="px-4 py-2 text-sm text-gray-500 max-w-md">
                                 <div class="line-clamp-2">
@@ -120,7 +101,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-4 text-center text-sm text-gray-500">
+                            <td colspan="4" class="px-4 py-4 text-center text-sm text-gray-500">
                                 No suppliers found.
                             </td>
                         </tr>

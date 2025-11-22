@@ -14,8 +14,7 @@ class SuppliersController extends Controller
 
         $q = trim((string) $request->input('q', ''));
 
-        // Eager-load connections so we can aggregate product_type per supplier
-        $query = Supplier::with('connections');
+        $query = Supplier::query();
 
         if ($q !== '') {
             $needle = mb_strtolower($q);

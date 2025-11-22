@@ -1,0 +1,146 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Supplier: {{ $supplier->name }}
+        </h2>
+    </x-slot>
+
+    <div class="py-6">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+            @if (session('status'))
+                <div class="mb-4 text-sm text-green-600">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            {{-- Supplier basic info --}}
+            <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
+                <dl class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <dt class="font-medium text-gray-500">Name</dt>
+                        <dd class="text-gray-900">{{ $supplier->name }}</dd>
+                    </div>
+                    <div>
+                        <dt class="font-medium text-gray-500">Email</dt>
+                        <dd class="text-gray-900">{{ $supplier->email }}</dd>
+                    </div>
+                    <div class="md:col-span-2">
+                        <dt class="font-medium text-gray-500">Notes</dt>
+                        <dd class="text-gray-900 whitespace-pre-line">
+                            {{ $supplier->notes }}
+                        </dd>
+                    </div>
+                </dl>
+
+                <div class="mt-4 flex justify-end space-x-2">
+                    <a href="{{ route('suppliers.index') }}"
+                       class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md bg-white text-gray-700 hover:bg-gray-50">
+                        Back to list
+                    </a>
+                    <a href="{{ route('suppliers.edit', $supplier) }}"
+                       class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-indigo-600 text-white hover:bg-indigo-700">
+                        Edit Supplier
+                    </a>
+                </div>
+            </div>
+
+            {{-- Connections list --}}
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-semibold text-gray-800">
+                    Connections
+                </h3>
+                <a href="{{ route('suppliers.connections.create', $supplier) }}"
+                   class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-indigo-600 text-white hover:bg-indigo-700">
+                    + New Connection
+                </a>
+            </div>
+
+            <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Connection Name
+                            </th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Username
+                            </th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Product Type
+                            </th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Connection Dead
+                            </th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Charge Type
+                            </th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Notes
+                            </th>
+                            <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($supplier->connections as $connection)
+                            <tr>
+                                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $connection->name }}
+                                </td>
+                                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $connection->username }}
+                                </td>
+                                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $connection->product_type }}
+                                </td>
+                                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                    @if($connection->connection_dead)
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-red-50 text-red-700 text-xs">
+                                            Dead
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs">
+                                            Live
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $connection->charge_type_label ?? $connection->charge_type }}
+                                </td>
+                                <td class="px-4 py-2 text-sm text-gray-500 max-w-md">
+                                    <div class="line-clamp-2">
+                                        {{ $connection->notes }}
+                                    </div>
+                                </td>
+                                <td class="px-4 py-2 whitespace-nowrap text-right text-sm">
+                                    <a href="{{ route('suppliers.connections.edit', [$supplier, $connection]) }}"
+                                       class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                        Edit
+                                    </a>
+                                    <form action="{{ route('suppliers.connections.destroy', [$supplier, $connection]) }}"
+                                          method="POST"
+                                          class="inline"
+                                          onsubmit="return confirm('Delete this connection?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="text-red-600 hover:text-red-800">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-4 py-4 text-center text-sm text-gray-500">
+                                    No connections yet for this supplier.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

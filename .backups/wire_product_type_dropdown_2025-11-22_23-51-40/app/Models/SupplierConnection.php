@@ -5,18 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Supplier extends Model
+class SupplierConnection extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'supplier_id',
         'name',
-        'email',
+        'username',
+        'charge_type',
+        'product_type',
         'notes',
     ];
 
-    public function connections()
+    public function supplier()
     {
-        return $this->hasMany(SupplierConnection::class);
+        return $this->belongsTo(Supplier::class);
     }
 }

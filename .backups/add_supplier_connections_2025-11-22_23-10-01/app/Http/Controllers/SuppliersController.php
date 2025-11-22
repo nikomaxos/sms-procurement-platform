@@ -14,8 +14,7 @@ class SuppliersController extends Controller
 
         $q = trim((string) $request->input('q', ''));
 
-        // Eager-load connections so we can aggregate product_type per supplier
-        $query = Supplier::with('connections');
+        $query = Supplier::query();
 
         if ($q !== '') {
             $needle = mb_strtolower($q);
@@ -50,22 +49,11 @@ class SuppliersController extends Controller
             'notes' => ['nullable', 'string'],
         ]);
 
-        $supplier = Supplier::create($data);
+        Supplier::create($data);
 
         return redirect()
-            ->route('suppliers.show', $supplier)
+            ->route('suppliers.index')
             ->with('status', 'Supplier created.');
-    }
-
-    public function show(Supplier $supplier)
-    {
-        $supplier->load(['connections' => function ($q) {
-            $q->orderBy('name');
-        }]);
-
-        return view('suppliers.show', [
-            'supplier' => $supplier,
-        ]);
     }
 
     public function edit(Supplier $supplier)
@@ -86,7 +74,7 @@ class SuppliersController extends Controller
         $supplier->update($data);
 
         return redirect()
-            ->route('suppliers.show', $supplier)
+            ->route('suppliers.index')
             ->with('status', 'Supplier updated.');
     }
 

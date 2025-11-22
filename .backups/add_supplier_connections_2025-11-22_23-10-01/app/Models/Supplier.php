@@ -14,9 +14,4 @@ class Supplier extends Model
         'email',
         'notes',
     ];
-
-    public function connections()
-    {
-        return $this->hasMany(SupplierConnection::class);
-    }
 }

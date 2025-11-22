@@ -1,3 +1,146 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+##
+# add_products_provided_to_suppliers_list_v1.sh
+#
+# - Updates SuppliersController@index to eager-load `connections`
+# - Rewrites suppliers index view to show "Products Provided"
+#   as chips from distinct connection.product_type values
+##
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+STAMP="$(date +%F_%H-%M-%S)"
+BACKUP_DIR=".backups/add_products_provided_to_suppliers_list_${STAMP}"
+echo "==> Backup dir: ${BACKUP_DIR}"
+mkdir -p "${BACKUP_DIR}"
+
+backup_file() {
+  local f="$1"
+  if [[ -f "$f" ]]; then
+    echo "   - Backing up ${f}"
+    mkdir -p "${BACKUP_DIR}/$(dirname "${f}")"
+    cp "$f" "${BACKUP_DIR}/${f}"
+  fi
+}
+
+backup_file "app/Http/Controllers/SuppliersController.php"
+backup_file "resources/views/suppliers/index.blade.php"
+
+# ---------------------------------------------------------------------------
+# 1) Rewrite SuppliersController with eager-loaded connections
+# ---------------------------------------------------------------------------
+cat > app/Http/Controllers/SuppliersController.php << 'PHP'
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Supplier;
+use Illuminate\Http\Request;
+
+class SuppliersController extends Controller
+{
+    public function index(Request $request)
+    {
+        $perPage = (int) $request->input('per_page', 50);
+        $perPage = max(10, min($perPage, 200));
+
+        $q = trim((string) $request->input('q', ''));
+
+        // Eager-load connections so we can aggregate product_type per supplier
+        $query = Supplier::with('connections');
+
+        if ($q !== '') {
+            $needle = mb_strtolower($q);
+            $query->where(function ($q) use ($needle) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . $needle . '%'])
+                  ->orWhereRaw('LOWER(email) LIKE ?', ['%' . $needle . '%']);
+            });
+        }
+
+        $suppliers = $query
+            ->orderBy('name')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return view('suppliers.index', [
+            'suppliers' => $suppliers,
+            'q'         => $q,
+            'perPage'   => $perPage,
+        ]);
+    }
+
+    public function create()
+    {
+        return view('suppliers.create');
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'name'  => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
+            'notes' => ['nullable', 'string'],
+        ]);
+
+        $supplier = Supplier::create($data);
+
+        return redirect()
+            ->route('suppliers.show', $supplier)
+            ->with('status', 'Supplier created.');
+    }
+
+    public function show(Supplier $supplier)
+    {
+        $supplier->load(['connections' => function ($q) {
+            $q->orderBy('name');
+        }]);
+
+        return view('suppliers.show', [
+            'supplier' => $supplier,
+        ]);
+    }
+
+    public function edit(Supplier $supplier)
+    {
+        return view('suppliers.edit', [
+            'supplier' => $supplier,
+        ]);
+    }
+
+    public function update(Request $request, Supplier $supplier)
+    {
+        $data = $request->validate([
+            'name'  => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
+            'notes' => ['nullable', 'string'],
+        ]);
+
+        $supplier->update($data);
+
+        return redirect()
+            ->route('suppliers.show', $supplier)
+            ->with('status', 'Supplier updated.');
+    }
+
+    public function destroy(Supplier $supplier)
+    {
+        $supplier->delete();
+
+        return redirect()
+            ->route('suppliers.index')
+            ->with('status', 'Supplier deleted.');
+    }
+}
+PHP
+echo "==> Rewrote app/Http/Controllers/SuppliersController.php"
+
+# ---------------------------------------------------------------------------
+# 2) Rewrite suppliers index view with 'Products Provided' column
+# ---------------------------------------------------------------------------
+cat > resources/views/suppliers/index.blade.php << 'BLADE'
 <x-app-layout>
     @section('content')
     <div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -135,3 +278,16 @@
     </div>
     @endsection
 </x-app-layout>
+BLADE
+echo "==> Rewrote resources/views/suppliers/index.blade.php"
+
+echo "==> Optional: php -l and view:clear inside container"
+if command -v docker >/dev/null 2>&1; then
+  docker compose exec -T app bash -lc '
+    cd /var/www/html && \
+    php -l app/Http/Controllers/SuppliersController.php && \
+    php artisan view:clear
+  ' || echo "   (php -l or view:clear reported an issue or container not running; inspect manually if needed)"
+fi
+
+echo "==> Done. Suppliers list now shows Products Provided chips."

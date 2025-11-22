@@ -198,28 +198,3 @@ use App\Http\Controllers\SuppliersController;
 Route::middleware(['auth'])->group(function () {
     Route::resource('suppliers', SuppliersController::class)->except(['show']);
 });
-
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('suppliers/{supplier}')->name('suppliers.')->group(function () {
-        Route::get('connections/create', [\App\Http\Controllers\SupplierConnectionsController::class, 'create'])->name('connections.create');
-        Route::post('connections', [\App\Http\Controllers\SupplierConnectionsController::class, 'store'])->name('connections.store');
-        Route::get('connections/{connection}/edit', [\App\Http\Controllers\SupplierConnectionsController::class, 'edit'])->name('connections.edit');
-        Route::put('connections/{connection}', [\App\Http\Controllers\SupplierConnectionsController::class, 'update'])->name('connections.update');
-        Route::delete('connections/{connection}', [\App\Http\Controllers\SupplierConnectionsController::class, 'destroy'])->name('connections.destroy');
-    });
-});
-
-/*
-|--------------------------------------------------------------------------
-| Suppliers show route (detail page)
-|--------------------------------------------------------------------------
-|
-| Ensure that the suppliers.show route exists, even if the original
-| Route::resource('suppliers', ...) was created with ->except(['show']).
-| Using fully qualified controller class to avoid any missing "use" issues.
-|
-*/
-
-Route::get('/suppliers/{supplier}', [\App\Http\Controllers\SuppliersController::class, 'show'])
-    ->middleware(['auth'])
-    ->name('suppliers.show');
