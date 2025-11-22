@@ -186,15 +186,3 @@ Route::middleware(['auth', \App\Http\Middleware\AdminOnly::class])->group(functi
     Route::get('networks/duplicates', [NetworkDedupController::class, 'index'])->name('networks.duplicates.index');
     Route::post('networks/duplicates/merge', [NetworkDedupController::class, 'merge'])->name('networks.duplicates.merge');
 });
-
-/*
-|--------------------------------------------------------------------------
-| Suppliers
-|--------------------------------------------------------------------------
-*/
-
-use App\Http\Controllers\SuppliersController;
-
-Route::middleware(['auth'])->group(function () {
-    Route::resource('suppliers', SuppliersController::class)->except(['show']);
-});

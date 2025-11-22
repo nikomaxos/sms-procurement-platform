@@ -31,9 +31,6 @@
                     <x-nav-link :href="route('networks.index')" :active="request()->routeIs('networks.*')">
                         {{ __('Networks') }}
                     </x-nav-link>
-            <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
-                {{ __( 'Suppliers' ) }}
-            </x-nav-link>
 
                     <!-- Settings dropdown (hover) -->
                     @auth
@@ -158,9 +155,6 @@
 
             <x-responsive-nav-link :href="route('networks.index')" :active="request()->routeIs('networks.*')">
                 {{ __('Networks') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
-                {{ __( 'Suppliers' ) }}
             </x-responsive-nav-link>
 
             @auth
