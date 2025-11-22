@@ -1,0 +1,21 @@
+==> Running carriers_import_nav_force_all_v1.sh at 2025-11-21_23-50-00
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/carriers_import_nav_force_all_2025-11-21_23-50-00.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/carriers_import_nav_force_all_2025-11-21_23-50-00
+==> Backing up Blade layout files...
+==> Backed up /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php -> /home/user/sms-procurement-platform/.backups/carriers_import_nav_force_all_2025-11-21_23-50-00/resources_views_layouts_navigation.blade.php
+==> Backed up /home/user/sms-procurement-platform/resources/views/components/app-layout.blade.php -> /home/user/sms-procurement-platform/.backups/carriers_import_nav_force_all_2025-11-21_23-50-00/resources_views_components_app-layout.blade.php
+==> Rewriting components/app-layout.blade.php...
+==> Rewriting layouts/navigation.blade.php...
+==> Blade files rewritten.
+==> Clearing & rebuilding Blade cache...
+
+   INFO  Compiled views cleared successfully.  
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> carriers_import_nav_force_all_v1.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/carriers_import_nav_force_all_2025-11-21_23-50-00.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/carriers_import_nav_force_all_2025-11-21_23-50-00

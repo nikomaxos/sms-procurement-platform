@@ -1,0 +1,17 @@
+==> Running ui_networks_filters_horizontal_v1.sh at 2025-11-22_12-07-40
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/ui_networks_filters_horizontal_2025-11-22_12-07-40.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/ui_networks_filters_horizontal_2025-11-22_12-07-40
+==> Backed up /home/user/sms-procurement-platform/resources/views/networks/index.blade.php -> /home/user/sms-procurement-platform/.backups/ui_networks_filters_horizontal_2025-11-22_12-07-40/resources_views_networks_index.blade.php
+==> Rewriting networks index view (horizontal filters)
+==> Clearing & caching Blade views via docker compose (service: app)
+
+   INFO  Compiled views cleared successfully.  
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> ui_networks_filters_horizontal_v1.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/ui_networks_filters_horizontal_2025-11-22_12-07-40.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/ui_networks_filters_horizontal_2025-11-22_12-07-40

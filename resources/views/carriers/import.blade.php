@@ -1,3 +1,9 @@
+@php
+    if (! auth()->check() || ! auth()->user()->is_admin) {
+        abort(403);
+    }
+@endphp
+
 @extends('layouts.app')
 
 @section('content')

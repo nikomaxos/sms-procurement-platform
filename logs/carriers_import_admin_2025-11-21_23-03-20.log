@@ -1,0 +1,15 @@
+==> Running carriers_import_admin_link_v5.sh at 2025-11-21_23-03-20
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/carriers_import_admin_2025-11-21_23-03-20.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-03-20
+==> Using artisan via docker compose (service: app)
+==> Backed up /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php -> /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-03-20/resources_views_layouts_navigation.blade.php
+==> Carriers Import already present in navigation; leaving as-is.
+==> Locating Carriers Import view for admin guard...
+   - Found Carriers Import view: /home/user/sms-procurement-platform/resources/views/carriers/import.blade.php
+==> Backed up /home/user/sms-procurement-platform/resources/views/carriers/import.blade.php -> /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-03-20/resources_views_carriers_import.blade.php
+ERROR: carriers_import_admin_link_v5.sh failed at line 163
+==> Rolling back modified files...
+   - Restored /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php from /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-03-20/resources_views_layouts_navigation.blade.php
+   - Restored /home/user/sms-procurement-platform/resources/views/carriers/import.blade.php from /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-03-20/resources_views_carriers_import.blade.php
+WARN: Rollback complete. See /home/user/sms-procurement-platform/logs/carriers_import_admin_2025-11-21_23-03-20.log for details.

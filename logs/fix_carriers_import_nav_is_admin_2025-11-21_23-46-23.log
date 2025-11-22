@@ -1,0 +1,15 @@
+==> Running fix_carriers_import_nav_is_admin.sh at 2025-11-21_23-46-23
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/fix_carriers_import_nav_is_admin_2025-11-21_23-46-23.log
+==> Backed up navigation.blade.php -> /home/user/sms-procurement-platform/.backups/navigation.blade.php.2025-11-21_23-46-23.bak
+==> Updated admin guard in navigation.blade.php
+
+   INFO  Compiled views cleared successfully.  
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> View cache rebuilt OK
+==> Done. Carriers Import link should now be visible for is_admin=true users.
+Backup: /home/user/sms-procurement-platform/.backups/navigation.blade.php.2025-11-21_23-46-23.bak

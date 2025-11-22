@@ -1,0 +1,5 @@
+==> Running carriers_import_admin_link_v6.sh at 2025-11-21_23-10-27
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/carriers_import_admin_2025-11-21_23-10-27.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-10-27
+==> Using artisan via docker compose (service: app)

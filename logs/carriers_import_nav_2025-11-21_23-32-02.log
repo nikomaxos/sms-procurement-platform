@@ -1,0 +1,24 @@
+==> Running fix_carriers_import_nav_admin_v1.sh at 2025-11-21_23-32-02
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/carriers_import_nav_2025-11-21_23-32-02.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/carriers_import_nav_2025-11-21_23-32-02
+==> Backed up navigation.blade.php -> /home/user/sms-procurement-platform/.backups/carriers_import_nav_2025-11-21_23-32-02/navigation.blade.php.bak
+==> Patching admin guard from 'usertype' to 'is_admin'...
+   - Done patching navigation.blade.php
+==> Clearing and rebuilding caches via: docker compose exec -T app php artisan
+
+   INFO  Clearing cached bootstrap files.  
+
+  config ......................................................... 1.18ms DONE
+  cache .......................................................... 2.99ms DONE
+  compiled ....................................................... 0.83ms DONE
+  events ......................................................... 0.57ms DONE
+  routes ......................................................... 0.53ms DONE
+  views .......................................................... 6.51ms DONE
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> Done. If something looks wrong, restore from backup:
+   cp "/home/user/sms-procurement-platform/.backups/carriers_import_nav_2025-11-21_23-32-02/navigation.blade.php.bak" "/home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php"

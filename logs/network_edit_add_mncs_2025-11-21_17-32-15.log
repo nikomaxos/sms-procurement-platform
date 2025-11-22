@@ -1,0 +1,26 @@
+==> Running network_edit_add_mncs_v1.sh at 2025-11-21_17-32-15
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/network_edit_add_mncs_2025-11-21_17-32-15.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/network_edit_add_mncs_2025-11-21_17-32-15
+==> Backed up /home/user/sms-procurement-platform/resources/views/networks/edit.blade.php -> /home/user/sms-procurement-platform/.backups/network_edit_add_mncs_2025-11-21_17-32-15/resources_views_networks_edit.blade.php
+==> Rewriting networks edit view to restore MCC/MNC list + keep Notes/Non-operational
+==> networks/edit.blade.php updated with MCC/MNC list.
+==> Clearing & rebuilding view cache (best-effort)...
+   - Using docker compose exec app
+
+   INFO  Clearing cached bootstrap files.  
+
+  config ......................................................... 1.25ms DONE
+  cache .......................................................... 3.35ms DONE
+  compiled ....................................................... 0.89ms DONE
+  events ......................................................... 0.61ms DONE
+  routes ......................................................... 0.55ms DONE
+  views .......................................................... 6.58ms DONE
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> network_edit_add_mncs_v1.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/network_edit_add_mncs_2025-11-21_17-32-15.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/network_edit_add_mncs_2025-11-21_17-32-15

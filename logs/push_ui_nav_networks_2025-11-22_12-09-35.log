@@ -1,0 +1,177 @@
+==> Running push_ui_nav_networks_v1.sh at 2025-11-22_12-09-35
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/push_ui_nav_networks_2025-11-22_12-09-35.log
+==> Current branch: main
+==> Remote origin: https://github.com/nikomaxos/sms-procurement-platform.git
+==> Changes to be committed:
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   app/Http/Controllers/NetworksController.php
+	modified:   app/Models/Network.php
+	modified:   app/Models/NetworkMnc.php
+	modified:   app/Support/MccMncNormalizer.php
+	modified:   resources/views/carriers/import.blade.php
+	modified:   resources/views/countries/index.blade.php
+	modified:   resources/views/layouts/app.blade.php
+	modified:   resources/views/networks/edit.blade.php
+	modified:   resources/views/networks/index.blade.php
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.backups/carriers_import_admin_2025-11-21_22-28-57/
+	.backups/carriers_import_admin_2025-11-21_22-59-34/
+	.backups/carriers_import_admin_2025-11-21_23-03-20/
+	.backups/carriers_import_admin_2025-11-21_23-15-04/
+	.backups/carriers_import_admin_2025-11-21_23-21-28/
+	.backups/carriers_import_layout_nav_reset_2025-11-22_00-04-41/
+	.backups/carriers_import_nav_2025-11-21_23-32-02/
+	.backups/carriers_import_nav_fix_2025-11-21_23-37-32/
+	.backups/carriers_import_nav_force_all_2025-11-21_23-50-00/
+	.backups/carriers_import_nav_reset_2025-11-21_23-40-45/
+	.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/
+	.backups/feature_pack_networks_countries_v1_2025-11-21_13-08-13/
+	.backups/fix_carriers_import_is_admin_2025-11-21_23-27-56/
+	.backups/fix_nav_admin_2025-11-22_01-02-45/
+	.backups/fix_nav_admin_flag_2025-11-22_00-53-20/
+	.backups/fix_nav_settings_dropdown_2025-11-22_00-40-38/
+	.backups/fix_nav_settings_dropdown_2025-11-22_00-43-46/
+	.backups/fix_networks_countries_2025-11-21_14-16-21/
+	.backups/fix_networks_index_mccmnc_v2_2025-11-21_21-37-28/
+	.backups/fix_networks_index_mccmnc_v2_2025-11-21_21-46-26/
+	.backups/fix_networks_mccmnc_contains_v2_2025-11-21_21-58-03/
+	.backups/mccmnc_trim_zero_touch_mnc_v2_2025-11-21_19-59-39/
+	.backups/mccmnc_trim_zero_v1_2025-11-21_19-10-37/
+	.backups/mccmnc_trim_zero_v1_2025-11-21_19-46-21/
+	.backups/mnc_full_pipeline_v1_2025-11-21_20-29-46/
+	.backups/nav_full_menu_2025-11-22_00-08-38/
+	.backups/navigation.blade.php.2025-11-21_23-46-23.bak
+	.backups/network_edit_add_mncs_2025-11-21_17-32-15/
+	.backups/network_edit_add_mncs_2025-11-21_18-16-01/
+	.backups/network_mnc_crud_v1_2025-11-21_18-23-16/
+	.backups/network_mnc_error_ui_v1_2025-11-21_19-00-16/
+	.backups/network_mnc_readonly_mcc_v1_2025-11-21_18-45-57/
+	.backups/network_mnc_validate_digits_v1_2025-11-21_18-53-21/
+	.backups/network_notes_meta_2025-11-21_14-42-56/
+	.backups/network_notes_meta_v2_2025-11-21_17-27-25/
+	.backups/networks_mcc_column_restore_v1_2025-11-21_20-53-49/
+	.backups/networks_mccmnc_contains_v1_2025-11-21_21-50-40/
+	.backups/networks_mccmnc_filter_v1_2025-11-21_21-32-34/
+	.backups/networks_mccmnc_startswith_v1_2025-11-21_22-03-51/
+	.backups/networks_mccs_by_network_v1_2025-11-21_21-20-56/
+	.backups/settings_menu_expand_2025-11-22_00-16-43/
+	.backups/settings_menu_expand_2025-11-22_00-20-18/
+	.backups/settings_menu_fix_2025-11-22_00-23-08/
+	.backups/ui_nav_and_networks_filters_2025-11-22_11-40-34/
+	.backups/ui_nav_and_networks_filters_2025-11-22_11-49-37/
+	.backups/ui_nav_networks_countries_2025-11-22_00-36-29/
+	.backups/ui_nav_networks_countries_2025-11-22_00-37-10/
+	.backups/ui_networks_filters_horizontal_2025-11-22_12-07-40/
+	app/Models/NetworkMeta.php
+	database/migrations/2025_11_21_200937_add_network_mncs_normalizer_trigger.php
+	logs/carriers_import_admin_2025-11-21_22-28-57.log
+	logs/carriers_import_admin_2025-11-21_22-56-33.log
+	logs/carriers_import_admin_2025-11-21_22-59-34.log
+	logs/carriers_import_admin_2025-11-21_23-03-20.log
+	logs/carriers_import_admin_2025-11-21_23-09-36.log
+	logs/carriers_import_admin_2025-11-21_23-10-27.log
+	logs/carriers_import_admin_2025-11-21_23-15-04.log
+	logs/carriers_import_admin_2025-11-21_23-21-28.log
+	logs/carriers_import_layout_nav_reset_2025-11-22_00-04-41.log
+	logs/carriers_import_nav_2025-11-21_23-32-02.log
+	logs/carriers_import_nav_fix_2025-11-21_23-37-32.log
+	logs/carriers_import_nav_force_all_2025-11-21_23-50-00.log
+	logs/carriers_import_nav_reset_2025-11-21_23-40-45.log
+	logs/feature_pack_networks_countries_v1_2025-11-20_17-32-19.log
+	logs/feature_pack_networks_countries_v1_2025-11-21_13-08-13.log
+	logs/fix_carriers_import_is_admin_2025-11-21_23-27-56.log
+	logs/fix_carriers_import_nav_is_admin_2025-11-21_23-46-23.log
+	logs/fix_nav_admin_2025-11-22_01-02-45.log
+	logs/fix_nav_admin_flag_2025-11-22_00-53-20.log
+	logs/fix_nav_settings_dropdown_2025-11-22_00-40-38.log
+	logs/fix_nav_settings_dropdown_2025-11-22_00-43-46.log
+	logs/fix_networks_index_mccmnc_v2_2025-11-21_21-37-28.log
+	logs/fix_networks_index_mccmnc_v2_2025-11-21_21-46-26.log
+	logs/fix_networks_mccmnc_contains_v2_2025-11-21_21-58-03.log
+	logs/mccmnc_trim_zero_touch_mnc_v2_2025-11-21_19-59-39.log
+	logs/mccmnc_trim_zero_v1_2025-11-21_19-10-37.log
+	logs/mccmnc_trim_zero_v1_2025-11-21_19-46-21.log
+	logs/mnc_full_pipeline_v1_2025-11-21_20-29-46.log
+	logs/nav_full_menu_2025-11-22_00-08-38.log
+	logs/network_edit_add_mncs_2025-11-21_17-32-15.log
+	logs/network_edit_add_mncs_2025-11-21_18-16-01.log
+	logs/network_mnc_crud_v1_2025-11-21_18-23-16.log
+	logs/network_mnc_error_ui_v1_2025-11-21_19-00-16.log
+	logs/network_mnc_readonly_mcc_v1_2025-11-21_18-45-57.log
+	logs/network_mnc_validate_digits_v1_2025-11-21_18-53-21.log
+	logs/network_mncs_db_normalizer_v1_2025-11-21_20-09-37.log
+	logs/network_notes_meta_2025-11-21_14-42-56.log
+	logs/network_notes_meta_v2_2025-11-21_17-27-25.log
+	logs/networks_mcc_column_restore_v1_2025-11-21_20-53-49.log
+	logs/networks_mccmnc_contains_v1_2025-11-21_21-50-40.log
+	logs/networks_mccmnc_filter_v1_2025-11-21_21-32-34.log
+	logs/networks_mccmnc_startswith_v1_2025-11-21_22-03-51.log
+	logs/networks_mccs_by_network_v1_2025-11-21_21-20-56.log
+	logs/push_ui_nav_networks_2025-11-22_12-09-35.log
+	logs/settings_menu_expand_2025-11-22_00-16-43.log
+	logs/settings_menu_expand_2025-11-22_00-20-18.log
+	logs/settings_menu_fix_2025-11-22_00-23-08.log
+	logs/ui_nav_and_networks_filters_2025-11-22_11-40-34.log
+	logs/ui_nav_and_networks_filters_2025-11-22_11-49-37.log
+	logs/ui_nav_networks_countries_2025-11-22_00-36-29.log
+	logs/ui_nav_networks_countries_2025-11-22_00-37-10.log
+	logs/ui_networks_filters_horizontal_2025-11-22_12-07-40.log
+	resources/views/components/app-layout.blade.php
+	scripts/carriers_import_admin_link_v1.sh
+	scripts/carriers_import_admin_link_v3.sh
+	scripts/carriers_import_admin_link_v4.sh
+	scripts/carriers_import_admin_link_v5.sh
+	scripts/carriers_import_admin_link_v6.sh
+	scripts/carriers_import_admin_link_v7.sh
+	scripts/carriers_import_admin_link_v8.sh
+	scripts/carriers_import_layout_nav_reset_v1.sh
+	scripts/carriers_import_nav_fix_v1.sh
+	scripts/carriers_import_nav_force_all_v1.sh
+	scripts/carriers_import_nav_reset_v1.sh
+	scripts/feature_pack_networks_countries_v1.sh
+	scripts/fix_carriers_import_is_admin_v1.sh
+	scripts/fix_carriers_import_nav_admin_v1.sh
+	scripts/fix_carriers_import_nav_is_admin.sh
+	scripts/fix_nav_admin_flag_v1.sh
+	scripts/fix_nav_admin_v2.sh
+	scripts/fix_nav_settings_dropdown_v1.sh
+	scripts/fix_nav_settings_dropdown_v2.sh
+	scripts/fix_networks_countries_actions_and_css.sh
+	scripts/fix_networks_index_mccmnc_v2.sh
+	scripts/fix_networks_mccmnc_contains_v2.sh
+	scripts/mccmnc_trim_zero_touch_mnc_v2.sh
+	scripts/mccmnc_trim_zero_v1.sh
+	scripts/mnc_full_pipeline_v1.sh
+	scripts/nav_full_menu_restore_v1.sh
+	scripts/network_edit_add_mncs_v1.sh
+	scripts/network_mnc_crud_v1.sh
+	scripts/network_mnc_error_ui_v1.sh
+	scripts/network_mnc_readonly_mcc_v1.sh
+	scripts/network_mnc_validate_digits_v1.sh
+	scripts/network_mncs_db_normalizer_v1.sh
+	scripts/network_notes_meta_v1.sh
+	scripts/network_notes_meta_v2.sh
+	scripts/networks_mcc_column_restore_v1.sh
+	scripts/networks_mccmnc_contains_v1.sh
+	scripts/networks_mccmnc_filter_v1.sh
+	scripts/networks_mccmnc_startswith_v1.sh
+	scripts/networks_mccs_by_network_v1.sh
+	scripts/push_ui_nav_networks_v1.sh
+	scripts/settings_menu_expand_v1.sh
+	scripts/settings_menu_expand_v2.sh
+	scripts/settings_menu_fix_users_guard_v1.sh
+	scripts/ui_nav_and_networks_filters_v1.sh
+	scripts/ui_nav_and_networks_filters_v2.sh
+	scripts/ui_nav_networks_countries_v1.sh
+	scripts/ui_networks_filters_horizontal_v1.sh
+
+no changes added to commit (use "git add" and/or "git commit -a")
+==> Staging all changes (git add .)

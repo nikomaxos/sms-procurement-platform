@@ -1,0 +1,20 @@
+==> Running settings_menu_fix_users_guard_v1.sh at 2025-11-22_00-23-08
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/settings_menu_fix_2025-11-22_00-23-08.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/settings_menu_fix_2025-11-22_00-23-08
+==> Patching navigation Blade: /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php
+==> Backed up /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php -> /home/user/sms-procurement-platform/.backups/settings_menu_fix_2025-11-22_00-23-08/resources_views_layouts_navigation.blade.php
+==> navigation.blade.php updated with guarded Users Management link
+==> Clearing & caching views...
+
+   INFO  Compiled views cleared successfully.  
+
+   - view:clear OK
+
+
+   INFO  Blade templates cached successfully.  
+
+   - view:cache OK
+==> settings_menu_fix_users_guard_v1.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/settings_menu_fix_2025-11-22_00-23-08.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/settings_menu_fix_2025-11-22_00-23-08

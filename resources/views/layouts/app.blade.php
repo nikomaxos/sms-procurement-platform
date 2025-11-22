@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }}</title>
-    @vite(['resources/css/app.css','resources/js/app.js'])
-  </head>
-  <body class="antialiased bg-gray-50">
-    @include('partials.topbar')
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <div class="flex">
-      @include('partials.sidebar')
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
-      <main class="flex-1 min-h-screen">
-        @isset($header)
-          <header class="bg-white border-b">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
-              {{ $header }}
-            </div>
-          </header>
-        @endisset
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-          @hasSection('content')
-            @yield('content')
-          @else
-            {{ $slot ?? '' }}
-          @endif
+        <!-- Styles / Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    </head>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100">
+            {{-- Primary navigation bar --}}
+            @include('layouts.navigation')
+
+            <!-- Page Heading -->
+            @if (isset($header))
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endif
+
+            <!-- Page Content -->
+            <main>
+                @hasSection('content')
+                    @yield('content')
+                @else
+                    {{ $slot ?? '' }}
+                @endif
+            </main>
         </div>
-      </main>
-    </div>
-  </body>
+    </body>
 </html>

@@ -1,0 +1,15 @@
+==> Running carriers_import_nav_reset_v1.sh at 2025-11-21_23-40-45
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/carriers_import_nav_reset_2025-11-21_23-40-45.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/carriers_import_nav_reset_2025-11-21_23-40-45
+==> Backing up Blade layout files...
+==> Backed up /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php -> /home/user/sms-procurement-platform/.backups/carriers_import_nav_reset_2025-11-21_23-40-45/resources_views_layouts_navigation.blade.php
+==> WARN: Tried to back up missing file /home/user/sms-procurement-platform/resources/views/components/app-layout.blade.php
+==> Rewriting components/app-layout.blade.php...
+==> Rewriting layouts/navigation.blade.php...
+==> Blade files rewritten.
+==> Clearing & rebuilding Blade cache...
+   - docker compose / app service not detected; skipping artisan cache commands.
+==> carriers_import_nav_reset_v1.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/carriers_import_nav_reset_2025-11-21_23-40-45.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/carriers_import_nav_reset_2025-11-21_23-40-45

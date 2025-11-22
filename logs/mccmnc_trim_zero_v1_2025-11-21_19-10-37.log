@@ -1,0 +1,28 @@
+==> Running mccmnc_trim_zero_v1.sh at 2025-11-21_19-10-37
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/mccmnc_trim_zero_v1_2025-11-21_19-10-37.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/mccmnc_trim_zero_v1_2025-11-21_19-10-37
+==> Backed up /home/user/sms-procurement-platform/app/Support/MccMncNormalizer.php -> /home/user/sms-procurement-platform/.backups/mccmnc_trim_zero_v1_2025-11-21_19-10-37/app_Support_MccMncNormalizer.php
+==> Backed up /home/user/sms-procurement-platform/app/Models/NetworkMnc.php -> /home/user/sms-procurement-platform/.backups/mccmnc_trim_zero_v1_2025-11-21_19-10-37/app_Models_NetworkMnc.php
+==> Writing App\Support\MccMncNormalizer (5-digit/6-digit rule)
+==> Rewriting App\Models\NetworkMnc to always use MccMncNormalizer on save
+==> Files updated.
+==> Clearing & rebuilding caches (best-effort)...
+   - Using docker compose exec app
+
+   INFO  Clearing cached bootstrap files.  
+
+  config ......................................................... 1.10ms DONE
+  cache .......................................................... 3.36ms DONE
+  compiled ....................................................... 0.89ms DONE
+  events ......................................................... 0.63ms DONE
+  routes ......................................................... 0.62ms DONE
+  views .......................................................... 7.78ms DONE
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> mccmnc_trim_zero_v1.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/mccmnc_trim_zero_v1_2025-11-21_19-10-37.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/mccmnc_trim_zero_v1_2025-11-21_19-10-37

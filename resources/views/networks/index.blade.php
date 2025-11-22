@@ -90,11 +90,21 @@
         @includeIf('partials.flash_log')
 
         <div class="bg-white shadow-sm sm:rounded-lg p-4 space-y-4">
-            {{-- Filters in one row: q, country, mccmnc, non-operational, actions --}}
+            {{-- Filters in one *horizontal* row --}}
             <form method="GET" action="{{ route('networks.index') }}" id="networks-filter-form">
-                <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                <div
+                    class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end"
+                    style="
+                        display: flex;
+                        flex-direction: row;
+                        align-items: flex-end;
+                        gap: 1rem;
+                        flex-wrap: nowrap;
+                        overflow-x: auto;
+                    "
+                >
                     {{-- Search by name (q) --}}
-                    <div class="md:col-span-2">
+                    <div style="min-width: 200px;">
                         <label for="filter_q" class="block text-sm font-medium text-gray-700">
                             Search name
                         </label>
@@ -109,7 +119,7 @@
                     </div>
 
                     {{-- Country filter with typeahead + keyboard navigation --}}
-                    <div class="relative">
+                    <div class="relative" style="min-width: 260px;">
                         <label for="filter_country_name" class="block text-sm font-medium text-gray-700">
                             Country
                         </label>
@@ -146,7 +156,7 @@
                     </div>
 
                     {{-- MCCMNC filter (starts with) --}}
-                    <div>
+                    <div style="min-width: 140px;">
                         <label for="filter_mccmnc" class="block text-sm font-medium text-gray-700">
                             MCCMNC
                         </label>
@@ -160,8 +170,8 @@
                         >
                     </div>
 
-                    {{-- Non-operational filter (last) --}}
-                    <div>
+                    {{-- Non-operational filter (last filter) --}}
+                    <div style="min-width: 160px;">
                         <label for="filter_non_operational" class="block text-sm font-medium text-gray-700">
                             Non-operational
                         </label>
@@ -177,7 +187,7 @@
                     </div>
 
                     {{-- Actions: apply/reset --}}
-                    <div class="flex gap-2 justify-start md:justify-end">
+                    <div style="min-width: 170px; display:flex; justify-content:flex-end; gap:0.5rem;">
                         <button
                             type="submit"
                             class="inline-flex items-center px-4 py-2 border border-transparent text-xs font-semibold rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"

@@ -1,0 +1,18 @@
+==> Running networks_mccs_by_network_v1.sh at 2025-11-21_21-20-56
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/networks_mccs_by_network_v1_2025-11-21_21-20-56.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/networks_mccs_by_network_v1_2025-11-21_21-20-56
+==> Backed up /home/user/sms-procurement-platform/resources/views/networks/index.blade.php -> /home/user/sms-procurement-platform/.backups/networks_mccs_by_network_v1_2025-11-21_21-20-56/resources_views_networks_index.blade.php
+==> Rewriting networks index view so MCCs come from network->mncs only
+==> networks/index.blade.php rewritten.
+==> Clearing & caching views via docker compose (app)
+
+   INFO  Compiled views cleared successfully.  
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> networks_mccs_by_network_v1.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/networks_mccs_by_network_v1_2025-11-21_21-20-56.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/networks_mccs_by_network_v1_2025-11-21_21-20-56

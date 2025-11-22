@@ -1,0 +1,16 @@
+==> Running fix_nav_admin_v2.sh at 2025-11-22_01-02-45
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/fix_nav_admin_2025-11-22_01-02-45.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/fix_nav_admin_2025-11-22_01-02-45
+==> Backed up navigation to /home/user/sms-procurement-platform/.backups/fix_nav_admin_2025-11-22_01-02-45/navigation.blade.php.bak
+==> Writing canonical navigation.blade.php
+==> Best-effort artisan view:clear/view:cache via docker compose (service: app)
+
+   INFO  Compiled views cleared successfully.  
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> fix_nav_admin_v2.sh completed successfully.
+Backups stored under: /home/user/sms-procurement-platform/.backups/fix_nav_admin_2025-11-22_01-02-45

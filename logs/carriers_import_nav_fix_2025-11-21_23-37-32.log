@@ -1,0 +1,13 @@
+==> Running carriers_import_nav_fix_v1.sh at 2025-11-21_23-37-32
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/carriers_import_nav_fix_2025-11-21_23-37-32.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/carriers_import_nav_fix_2025-11-21_23-37-32
+==> Backing up navigation Blade...
+==> Backed up /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php -> /home/user/sms-procurement-platform/.backups/carriers_import_nav_fix_2025-11-21_23-37-32/resources_views_layouts_navigation.blade.php
+==> Rewriting navigation Blade...
+==> navigation.blade.php rewritten.
+==> Clearing & rebuilding Blade cache...
+   - docker compose not available; skipping artisan cache commands.
+==> carriers_import_nav_fix_v1.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/carriers_import_nav_fix_2025-11-21_23-37-32.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/carriers_import_nav_fix_2025-11-21_23-37-32

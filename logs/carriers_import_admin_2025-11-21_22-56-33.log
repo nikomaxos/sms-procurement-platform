@@ -1,0 +1,13 @@
+==> Running carriers_import_admin_link_v3.sh at 2025-11-21_22-56-33
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/carriers_import_admin_2025-11-21_22-56-33.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_22-56-33
+==> Using artisan via: docker compose exec -T app php artisan
+==> Navigation already contains carriers.import link; skipping nav patch.
+==> Locating Carriers Import Blade view...
+ERROR: carriers_import_admin_link_v3.sh failed at line 137
+==> Rolling back modified files...
+WARN: Rollback complete. See /home/user/sms-procurement-platform/logs/carriers_import_admin_2025-11-21_22-56-33.log for details.
+ERROR: carriers_import_admin_link_v3.sh failed at line 137
+==> Rolling back modified files...
+WARN: Rollback complete. See /home/user/sms-procurement-platform/logs/carriers_import_admin_2025-11-21_22-56-33.log for details.

@@ -1,0 +1,26 @@
+==> Running network_mnc_validate_digits_v1.sh at 2025-11-21_18-53-21
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/network_mnc_validate_digits_v1_2025-11-21_18-53-21.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/network_mnc_validate_digits_v1_2025-11-21_18-53-21
+==> Backed up /home/user/sms-procurement-platform/app/Http/Controllers/NetworksController.php -> /home/user/sms-procurement-platform/.backups/network_mnc_validate_digits_v1_2025-11-21_18-53-21/app_Http_Controllers_NetworksController.php
+==> Rewriting NetworksController with 2–3 digit MNC validation
+==> NetworksController updated.
+==> Clearing & rebuilding caches (best-effort)...
+   - Using docker compose exec app
+
+   INFO  Clearing cached bootstrap files.  
+
+  config ......................................................... 1.24ms DONE
+  cache .......................................................... 3.10ms DONE
+  compiled ....................................................... 0.90ms DONE
+  events ......................................................... 0.57ms DONE
+  routes ......................................................... 0.74ms DONE
+  views .......................................................... 7.48ms DONE
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> network_mnc_validate_digits_v1.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/network_mnc_validate_digits_v1_2025-11-21_18-53-21.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/network_mnc_validate_digits_v1_2025-11-21_18-53-21

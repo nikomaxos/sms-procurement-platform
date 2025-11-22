@@ -1,0 +1,19 @@
+==> Running fix_nav_settings_dropdown_v2.sh at 2025-11-22_00-43-46
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/fix_nav_settings_dropdown_2025-11-22_00-43-46.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/fix_nav_settings_dropdown_2025-11-22_00-43-46
+==> Backed up navigation to /home/user/sms-procurement-platform/.backups/fix_nav_settings_dropdown_2025-11-22_00-43-46/navigation.blade.php.bak
+==> Writing new navigation layout (v2, case-insensitive admin)
+==> Clearing & caching Blade views via docker compose (service: app)
+
+   INFO  Compiled views cleared successfully.  
+
+   - view:clear OK
+
+
+   INFO  Blade templates cached successfully.  
+
+   - view:cache OK
+==> fix_nav_settings_dropdown_v2.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/fix_nav_settings_dropdown_2025-11-22_00-43-46.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/fix_nav_settings_dropdown_2025-11-22_00-43-46

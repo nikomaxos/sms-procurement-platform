@@ -1,0 +1,60 @@
+==> Running feature_pack_networks_countries_v1 at 2025-11-20_17-32-19
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/feature_pack_networks_countries_v1_2025-11-20_17-32-19.log
+==> Detected docker-compose; using app container for artisan/php
+==> Ensuring migrations for networks.non_operational/notes and countries_base.notes
+==> Creating migration /home/user/sms-procurement-platform/database/migrations/2025_11_20_000001_add_non_operational_and_notes_to_networks_table.php
+==> Creating migration /home/user/sms-procurement-platform/database/migrations/2025_11_20_000002_add_notes_to_countries_base_table.php
+==> Patching networks index view: /home/user/sms-procurement-platform/resources/views/networks/index.blade.php (backing up original)
+==> Backed up /home/user/sms-procurement-platform/resources/views/networks/index.blade.php -> /home/user/sms-procurement-platform/.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/_home_user_sms-procurement-platform_resources_views_networks_index.blade.php
+==> Patching countries index view: /home/user/sms-procurement-platform/resources/views/countries/index.blade.php (backing up original)
+==> Backed up /home/user/sms-procurement-platform/resources/views/countries/index.blade.php -> /home/user/sms-procurement-platform/.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/_home_user_sms-procurement-platform_resources_views_countries_index.blade.php
+==> Trying to add 'Carriers Import' link to Settings menu
+==> Found navigation file: /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php.bak.2025-11-10_235117.bak.2025-11-12_22-29-58 – patching
+==> Backed up /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php.bak.2025-11-10_235117.bak.2025-11-12_22-29-58 -> /home/user/sms-procurement-platform/.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/_home_user_sms-procurement-platform_resources_views_layouts_navigation.blade.php.bak.2025-11-10_235117.bak.2025-11-12_22-29-58
+==> Creating MCCMNC normalizer helper at /home/user/sms-procurement-platform/app/Support/MccMncNormalizer.php
+==> [INFO] Possible ITU importer file detected (for manual wiring of MccMncNormalizer): /home/user/sms-procurement-platform/app/Models/NetworkMnc.php
+==> Running migrations (php artisan migrate --force)
+
+   INFO  Running migrations.  
+
+  2025_11_20_000001_add_non_operational_and_notes_to_networks_table  22.06ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[42809]: Wrong object type: 7 ERROR:  ALTER action ADD COLUMN cannot be performed on relation "networks"
+DETAIL:  This operation is not supported for views. (Connection: pgsql, SQL: alter table "networks" add column "non_operational" boolean not null default '0')
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:824
+    820▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    821▕                 );
+    822▕             }
+    823▕ 
+  ➜ 824▕             throw new QueryException(
+    825▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕             );
+    827▕         }
+    828▕     }
+
+      [2m+9 vendor frames [22m
+
+  10  database/migrations/2025_11_20_000001_add_non_operational_and_notes_to_networks_table.php:11
+      Illuminate\Support\Facades\Facade::__callStatic("table")
+      [2m+27 vendor frames [22m
+
+  38  artisan:16
+      Illuminate\Foundation\Application::handleCommand(Object(Symfony\Component\Console\Input\ArgvInput))
+
+WARN: Error occurred at line 111. Starting rollback.
+==> Restoring modified files from backup (if any)
+==> Restored /home/user/sms-procurement-platform/resources/views/networks/index.blade.php from /home/user/sms-procurement-platform/.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/_home_user_sms-procurement-platform_resources_views_networks_index.blade.php
+==> Restored /home/user/sms-procurement-platform/resources/views/networks/index.blade.php from /home/user/sms-procurement-platform/.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/_home_user_sms-procurement-platform_resources_views_networks_index.blade.php
+==> Restored /home/user/sms-procurement-platform/resources/views/countries/index.blade.php from /home/user/sms-procurement-platform/.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/_home_user_sms-procurement-platform_resources_views_countries_index.blade.php
+==> Restored /home/user/sms-procurement-platform/resources/views/countries/index.blade.php from /home/user/sms-procurement-platform/.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/_home_user_sms-procurement-platform_resources_views_countries_index.blade.php
+==> Restored /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php.bak.2025-11-10_235117.bak.2025-11-12_22-29-58 from /home/user/sms-procurement-platform/.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/_home_user_sms-procurement-platform_resources_views_layouts_navigation.blade.php.bak.2025-11-10_235117.bak.2025-11-12_22-29-58
+==> Restored /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php.bak.2025-11-10_235117.bak.2025-11-12_22-29-58 from /home/user/sms-procurement-platform/.backups/feature_pack_networks_countries_v1_2025-11-20_17-32-19/_home_user_sms-procurement-platform_resources_views_layouts_navigation.blade.php.bak.2025-11-10_235117.bak.2025-11-12_22-29-58
+==> Removing newly created files (if any)
+==> Removed new file /home/user/sms-procurement-platform/database/migrations/2025_11_20_000001_add_non_operational_and_notes_to_networks_table.php
+==> Removed new file /home/user/sms-procurement-platform/database/migrations/2025_11_20_000002_add_notes_to_countries_base_table.php
+==> Removed new file /home/user/sms-procurement-platform/app/Support/MccMncNormalizer.php
+WARN: Rollback complete. See /home/user/sms-procurement-platform/logs/feature_pack_networks_countries_v1_2025-11-20_17-32-19.log for details.

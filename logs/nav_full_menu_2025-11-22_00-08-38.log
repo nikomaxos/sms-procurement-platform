@@ -1,0 +1,18 @@
+==> Running nav_full_menu_restore_v1.sh at 2025-11-22_00-08-38
+ROOT_DIR:  /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/nav_full_menu_2025-11-22_00-08-38.log
+BACKUP:   /home/user/sms-procurement-platform/.backups/nav_full_menu_2025-11-22_00-08-38
+==> Using artisan via docker compose (service: app)
+==> Backed up /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php -> /home/user/sms-procurement-platform/.backups/nav_full_menu_2025-11-22_00-08-38/resources_views_layouts_navigation.blade.php
+==> navigation.blade.php rewritten.
+==> Clearing and caching views...
+
+   INFO  Compiled views cleared successfully.  
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> nav_full_menu_restore_v1.sh completed successfully.
+Log file:   /home/user/sms-procurement-platform/logs/nav_full_menu_2025-11-22_00-08-38.log
+Backups in: /home/user/sms-procurement-platform/.backups/nav_full_menu_2025-11-22_00-08-38

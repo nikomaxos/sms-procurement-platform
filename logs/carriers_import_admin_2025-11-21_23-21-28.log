@@ -1,0 +1,15 @@
+==> Running carriers_import_admin_link_v8.sh at 2025-11-21_23-21-28
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/carriers_import_admin_2025-11-21_23-21-28.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-21-28
+==> Using artisan via docker compose (service: app)
+==> Rewriting navigation: /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php
+==> Backed up /home/user/sms-procurement-platform/resources/views/layouts/navigation.blade.php -> /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-21-28/resources_views_layouts_navigation.blade.php
+==> navigation.blade.php rewritten with left-nav Carriers Import (admin only)
+==> Guarding carriers import view: /home/user/sms-procurement-platform/resources/views/carriers/import.blade.php
+==> Backed up /home/user/sms-procurement-platform/resources/views/carriers/import.blade.php -> /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-21-28/resources_views_carriers_import.blade.php
+   - 403 guard already present; skipping guard insertion.
+==> Clearing & rebuilding caches (optimize:clear, view:cache)
+==> carriers_import_admin_link_v8.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/carriers_import_admin_2025-11-21_23-21-28.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/carriers_import_admin_2025-11-21_23-21-28

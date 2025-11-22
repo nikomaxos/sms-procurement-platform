@@ -1,0 +1,31 @@
+==> Running network_notes_meta_v2.sh at 2025-11-21_17-27-25
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/network_notes_meta_v2_2025-11-21_17-27-25.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/network_notes_meta_v2_2025-11-21_17-27-25
+==> Backed up /home/user/sms-procurement-platform/app/Models/Network.php -> /home/user/sms-procurement-platform/.backups/network_notes_meta_v2_2025-11-21_17-27-25/app_Models_Network.php
+==> Network model rewritten with meta() relation.
+==> Backed up /home/user/sms-procurement-platform/app/Models/NetworkMeta.php -> /home/user/sms-procurement-platform/.backups/network_notes_meta_v2_2025-11-21_17-27-25/app_Models_NetworkMeta.php
+==> NetworkMeta model written.
+==> Backed up /home/user/sms-procurement-platform/app/Http/Controllers/NetworksController.php -> /home/user/sms-procurement-platform/.backups/network_notes_meta_v2_2025-11-21_17-27-25/app_Http_Controllers_NetworksController.php
+==> NetworksController rewritten cleanly with notes handling.
+==> Backed up /home/user/sms-procurement-platform/resources/views/networks/edit.blade.php -> /home/user/sms-procurement-platform/.backups/network_notes_meta_v2_2025-11-21_17-27-25/resources_views_networks_edit.blade.php
+==> networks/edit.blade.php rewritten with Notes + Non-operational.
+==> Clearing & rebuilding Laravel caches...
+   - Using docker compose exec app for artisan
+
+   INFO  Clearing cached bootstrap files.  
+
+  config ......................................................... 1.26ms DONE
+  cache .......................................................... 3.21ms DONE
+  compiled ....................................................... 0.86ms DONE
+  events ......................................................... 0.57ms DONE
+  routes ......................................................... 0.56ms DONE
+  views .......................................................... 7.37ms DONE
+
+
+
+   INFO  Blade templates cached successfully.  
+
+==> network_notes_meta_v2.sh completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/network_notes_meta_v2_2025-11-21_17-27-25.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/network_notes_meta_v2_2025-11-21_17-27-25

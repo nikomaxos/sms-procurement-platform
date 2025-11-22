@@ -1,0 +1,19 @@
+==> Running network_notes_meta_v1.sh at 2025-11-21_14-42-56
+ROOT_DIR: /home/user/sms-procurement-platform
+LOG_FILE: /home/user/sms-procurement-platform/logs/network_notes_meta_2025-11-21_14-42-56.log
+BACKUP_DIR: /home/user/sms-procurement-platform/.backups/network_notes_meta_2025-11-21_14-42-56
+==> Backed up /home/user/sms-procurement-platform/app/Models/Network.php -> /home/user/sms-procurement-platform/.backups/network_notes_meta_2025-11-21_14-42-56/app_Models_Network.php
+==> Backed up /home/user/sms-procurement-platform/app/Http/Controllers/NetworksController.php -> /home/user/sms-procurement-platform/.backups/network_notes_meta_2025-11-21_14-42-56/app_Http_Controllers_NetworksController.php
+==> Backed up /home/user/sms-procurement-platform/resources/views/networks/edit.blade.php -> /home/user/sms-procurement-platform/.backups/network_notes_meta_2025-11-21_14-42-56/resources_views_networks_edit.blade.php
+==> Step 1: Ensure NetworkMeta model exists
+   - Created NetworkMeta model.
+==> Step 2: Add meta() relation on Network model
+==> Step 3: Patch NetworksController@store/@update to handle notes
+==> Step 4: Rewrite networks edit view to include Notes
+   - networks/edit.blade.php written.
+==> Step 5: Clear & rebuild caches (best-effort)
+==> Running artisan: optimize:clear
+==> Running artisan: view:cache
+==> Script completed successfully.
+Log file: /home/user/sms-procurement-platform/logs/network_notes_meta_2025-11-21_14-42-56.log
+Backups stored under: /home/user/sms-procurement-platform/.backups/network_notes_meta_2025-11-21_14-42-56
