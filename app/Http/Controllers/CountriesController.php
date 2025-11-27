@@ -29,4 +29,72 @@ class CountriesController extends Controller
         $mccs = $country->mccs->pluck('mcc')->all(); // array for implode
         return view('countries.edit', compact('country','mccs'));
     }
+
+    /**
+     * Show the form for creating a new country.
+     */
+    public function create()
+    {
+        $country = new \App\Models\Country();
+
+        return view('countries.create', compact('country'));
+    }
+
+    /**
+     * Store a newly created country from the simple create form.
+     */
+    public function storeSimple(\Illuminate\Http\Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'iso2' => 'nullable|string|max:2',
+        ]);
+
+        $country = new \App\Models\Country();
+        $country->name = $data['name'];
+        if (!empty($data['iso2'])) {
+            $country->iso2 = strtoupper($data['iso2']);
+        }
+        $country->save();
+
+        return redirect()
+            ->route('countries.index')
+            ->with('status', 'Country created.');
+    }
+
+    /**
+     * Store a newly created country.
+     */
+    public function store(\Illuminate\Http\Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'iso2' => 'nullable|string|max:2',
+        ]);
+
+        $country = new \App\Models\Country();
+        $country->name = $data['name'];
+
+        if (!empty($data['iso2'])) {
+            $country->iso2 = strtoupper($data['iso2']);
+        }
+
+        $country->save();
+
+        return redirect()
+            ->route('countries.index')
+            ->with('status', 'Country created.');
+    }
+
+    /**
+     * Remove the specified country from storage.
+     */
+    public function destroy(\App\Models\Country $country)
+    {
+        $country->delete();
+
+        return redirect()
+            ->route('countries.index')
+            ->with('status', 'Country deleted.');
+    }
 }

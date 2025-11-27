@@ -1,0 +1,1 @@
+echo == 4: Run migrations INSIDE sms-platform-app container... artisan migrate --force inside container FAILED - check above error

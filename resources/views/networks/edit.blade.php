@@ -6,18 +6,20 @@
     </x-slot>
 
     @php
-        // Default MCC from the first CountryMcc row (if any)
-        $defaultMcc = optional(optional($network->country)->mccs->first())->mcc;
-        $defaultMcc = $defaultMcc ? str_pad((string) $defaultMcc, 3, '0', STR_PAD_LEFT) : '';
+        $defaultMcc = '';
+        if ($network->country && $network->country->mccs && $network->country->mccs->count()) {
+            $firstMcc = $network->country->mccs->first();
+            if ($firstMcc && $firstMcc->mcc !== null) {
+                $defaultMcc = str_pad((string) $firstMcc->mcc, 3, '0', STR_PAD_LEFT);
+            }
+        }
 
-        // Whether any MNC field failed validation (mncs.*.mnc)
         $hasMncError = $errors->has('mncs.*.mnc');
     @endphp
 
     <div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         @includeIf('partials.flash_log')
 
-        {{-- Global error summary (Laravel validation) --}}
         @if ($errors->any())
             <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
                 <div class="font-semibold mb-1">There were some problems with your input:</div>
@@ -29,14 +31,12 @@
             </div>
         @endif
 
-        {{-- Main edit form --}}
         <div class="bg-white shadow sm:rounded-lg p-6 space-y-6">
             <form method="POST" action="{{ route('networks.update', $network->id) }}">
                 @csrf
                 @method('PUT')
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {{-- Country --}}
                     <div>
                         <label for="country_id" class="block text-sm font-medium text-gray-700">
                             Country
@@ -58,7 +58,6 @@
                         @enderror
                     </div>
 
-                    {{-- Name --}}
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">
                             Name
@@ -78,7 +77,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    {{-- Non-operational flag --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
                             Status
@@ -98,7 +96,6 @@
                         </div>
                     </div>
 
-                    {{-- Notes --}}
                     <div>
                         <label for="notes" class="block text-sm font-medium text-gray-700">
                             Notes
@@ -116,7 +113,6 @@
                     </div>
                 </div>
 
-                {{-- MCC/MNC editable table --}}
                 <div class="mt-8 space-y-3">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-900">
@@ -197,7 +193,6 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    {{-- If empty, JS will add one row using defaultMcc --}}
                                 @endforelse
                             </tbody>
                         </table>
@@ -212,7 +207,7 @@
                     @endif
                 </div>
 
-                <div class="mt-6 flex items-center justify-end gap-3">
+                <div class="mt-6 flex items-center justify-between gap-3">
                     <a
                         href="{{ route('networks.index') }}"
                         class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
@@ -220,13 +215,33 @@
                         Back to list
                     </a>
 
-                    <button
-                        type="submit"
-                        class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Save
-                    </button>
+                    <div class="flex items-center gap-3">
+                        <button
+                            type="button"
+                            onclick="if (confirm('Are you sure you want to delete this network?')) { document.getElementById('delete-network-form-{{ $network->id }}').submit(); }"
+                            class="inline-flex items-center rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 shadow-sm hover:bg-red-50"
+                        >
+                            Delete
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                            Save
+                        </button>
+                    </div>
                 </div>
+            </form>
+
+            <form
+                id="delete-network-form-{{ $network->id }}"
+                method="POST"
+                action="{{ route('networks.destroy', $network) }}"
+                class="hidden"
+            >
+                @csrf
+                @method('DELETE')
             </form>
         </div>
     </div>

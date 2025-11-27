@@ -24,6 +24,10 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('offers.index')" :active="request()->routeIs('offers.*')">
+                        {{ __('Offers') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('countries.index')" :active="request()->routeIs('countries.*')">
                         {{ __('Countries') }}
                     </x-nav-link>
@@ -31,9 +35,10 @@
                     <x-nav-link :href="route('networks.index')" :active="request()->routeIs('networks.*')">
                         {{ __('Networks') }}
                     </x-nav-link>
-            <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
-                {{ __( 'Suppliers' ) }}
-            </x-nav-link>
+
+                    <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
+                        {{ __('Suppliers') }}
+                    </x-nav-link>
 
                     <!-- Settings dropdown (hover) -->
                     @auth
@@ -66,10 +71,16 @@
                                     <a href="{{ route('settings.dropdowns.index') }}" class="block px-4 py-2 hover:bg-gray-100">
                                         {{ __('Drop Down Menus') }}
                                     </a>
+
                                     <a href="{{ route('settings.imap.edit') }}" class="block px-4 py-2 hover:bg-gray-100">
                                         {{ __('IMAP Settings') }}
                                     </a>
+
                                     @if($isAdmin)
+                                        <a href="{{ route('settings.version-history.index') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                            {{ __('Version history') }}
+                                        </a>
+
                                         <a href="{{ url('/carriers/import') }}" class="block px-4 py-2 hover:bg-gray-100">
                                             {{ __('Carriers Import') }}
                                         </a>
@@ -152,6 +163,10 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
+            <x-responsive-nav-link :href="route('offers.index')" :active="request()->routeIs('offers.*')">
+                {{ __('Offers') }}
+            </x-responsive-nav-link>
+
             <x-responsive-nav-link :href="route('countries.index')" :active="request()->routeIs('countries.*')">
                 {{ __('Countries') }}
             </x-responsive-nav-link>
@@ -159,8 +174,9 @@
             <x-responsive-nav-link :href="route('networks.index')" :active="request()->routeIs('networks.*')">
                 {{ __('Networks') }}
             </x-responsive-nav-link>
+
             <x-responsive-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">
-                {{ __( 'Suppliers' ) }}
+                {{ __('Suppliers') }}
             </x-responsive-nav-link>
 
             @auth
@@ -178,6 +194,10 @@
                     </x-responsive-nav-link>
 
                     @if($isAdmin)
+                        <x-responsive-nav-link :href="route('settings.version-history.index')" :active="request()->routeIs('settings.version-history.*')">
+                            {{ __('Version history') }}
+                        </x-responsive-nav-link>
+
                         <x-responsive-nav-link :href="url('/carriers/import')" :active="request()->is('carriers/import')">
                             {{ __('Carriers Import') }}
                         </x-responsive-nav-link>

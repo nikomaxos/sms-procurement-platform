@@ -11,7 +11,7 @@
         $q              = trim((string) $request->input('q', ''));
         $countryId      = $request->input('country_id');
         $countryLabel   = trim((string) $request->input('country_label', ''));
-        $nonOperational = $request->input('non_operational'); // '', '1', '0'
+        $nonOperational = $request->input('non_operational');
         $mccmnc         = trim((string) $request->input('mccmnc', ''));
         $sort           = $request->input('sort', 'country');
         $direction      = strtolower((string) $request->input('direction', 'asc')) === 'desc' ? 'desc' : 'asc';
@@ -21,7 +21,6 @@
             $perPage = 25;
         }
 
-        // Countries for typeahead dropdown
         $countries = \App\Models\Country::orderBy('name')->get();
 
         if ($countryLabel === '' && $countryId) {
@@ -90,7 +89,6 @@
         @includeIf('partials.flash_log')
 
         <div class="bg-white shadow-sm sm:rounded-lg p-4 space-y-4">
-            {{-- Filters in one *horizontal* row --}}
             <form method="GET" action="{{ route('networks.index') }}" id="networks-filter-form">
                 <div
                     class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end"
@@ -103,7 +101,6 @@
                         overflow-x: auto;
                     "
                 >
-                    {{-- Search by name (q) --}}
                     <div style="min-width: 200px;">
                         <label for="filter_q" class="block text-sm font-medium text-gray-700">
                             Search name
@@ -118,7 +115,6 @@
                         >
                     </div>
 
-                    {{-- Country filter with typeahead + keyboard navigation --}}
                     <div class="relative" style="min-width: 260px;">
                         <label for="filter_country_name" class="block text-sm font-medium text-gray-700">
                             Country
@@ -155,7 +151,6 @@
                         </ul>
                     </div>
 
-                    {{-- MCCMNC filter (starts with) --}}
                     <div style="min-width: 140px;">
                         <label for="filter_mccmnc" class="block text-sm font-medium text-gray-700">
                             MCCMNC
@@ -170,7 +165,6 @@
                         >
                     </div>
 
-                    {{-- Non-operational filter (last filter) --}}
                     <div style="min-width: 160px;">
                         <label for="filter_non_operational" class="block text-sm font-medium text-gray-700">
                             Non-operational
@@ -186,8 +180,7 @@
                         </select>
                     </div>
 
-                    {{-- Actions: apply/reset --}}
-                    <div style="min-width: 170px; display:flex; justify-content:flex-end; gap:0.5rem;">
+                    <div style="min-width: 280px; display:flex; justify-content:flex-end; gap:0.5rem;">
                         <button
                             type="submit"
                             class="inline-flex items-center px-4 py-2 border border-transparent text-xs font-semibold rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -201,16 +194,21 @@
                         >
                             Reset
                         </a>
+
+                        <a
+                            href="{{ route('networks.create') }}"
+                            class="inline-flex items-center px-3 py-2 border border-transparent text-xs font-semibold rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        >
+                            + Create network
+                        </a>
                     </div>
                 </div>
 
-                {{-- Preserve sort/direction/per_page across filter submissions --}}
                 <input type="hidden" name="sort" id="networks_sort" value="{{ $sort }}">
                 <input type="hidden" name="direction" id="networks_direction" value="{{ $direction }}">
                 <input type="hidden" name="per_page" id="networks_per_page" value="{{ $perPage }}">
             </form>
 
-            {{-- Results table --}}
             <div class="overflow-x-auto rounded-lg border bg-white mt-4">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -358,7 +356,6 @@
                 </table>
             </div>
 
-            {{-- Pagination + per-page selector at bottom --}}
             <div class="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div class="text-sm text-gray-600">
                     @if ($networks->total() > 0)
@@ -394,7 +391,6 @@
         </div>
     </div>
 
-    {{-- Country typeahead keyboard navigation + per-page handler --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const input     = document.getElementById('filter_country_name');

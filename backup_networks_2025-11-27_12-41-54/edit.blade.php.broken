@@ -1,0 +1,179 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Edit Network
+        </h2>
+    </x-slot>
+
+    <div class="py-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        @includeIf('partials.flash_log')
+
+        @if ($errors->any())
+            <div class="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700">
+                <div class="font-semibold">There were some problems with your input:</div>
+                <ul class="mt-2 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="mb-4 text-sm text-gray-600">
+            <div><span class="font-semibold">Network ID:</span> {{ $network->id }}</div>
+            <div><span class="font-semibold">Name:</span> {{ $network->name }}</div>
+        </div>
+
+        <form method="POST" action="{{ route('networks.update', $network) }}" class="space-y-6">
+            @csrf
+            @method('PUT')
+
+            <div class="bg-white rounded-lg shadow p-4 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {{-- Country --}}
+                    <div>
+                        <label for="country_id" class="block text-sm font-medium text-gray-700">
+                            Country
+                        </label>
+                        <select
+                            id="country_id"
+                            name="country_id"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                        >
+                            <option value="">-- Select country --</option>
+                            @foreach($countries as $country)
+                                <option value="{{ $country->id }}"
+                                    @selected((string) old('country_id', $network->country_id) === (string) $country->id)>
+                                    {{ $country->name }} @if($country->iso2) ({{ $country->iso2 }}) @endif
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Name --}}
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">
+                            Network Name
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ old('name', $network->name) }}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                            required
+                        >
+                    </div>
+                </div>
+
+                {{-- Non-operational --}}
+                <div class="flex items-center gap-2">
+                    @php
+                        $nonOperational = old('non_operational', optional($network->meta)->non_operational) ? true : false;
+                    @endphp
+                    <input
+                        id="non_operational"
+                        name="non_operational"
+                        type="checkbox"
+                        value="1"
+                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        @checked($nonOperational)
+                    >
+                    <label for="non_operational" class="text-sm text-gray-700">
+                        Non-operational network
+                    </label>
+                </div>
+
+                {{-- Notes --}}
+                <div>
+                    <label for="notes" class="block text-sm font-medium text-gray-700">
+                        Notes
+                    </label>
+                    <textarea
+                        id="notes"
+                        name="notes"
+                        rows="3"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                        placeholder="Additional notes about this network"
+                    >{{ old('notes', optional($network->meta)->notes) }}</textarea>
+                </div>
+            </div>
+
+            {{-- MCC / MNC rows --}}
+            <div class="bg-white rounded-lg shadow p-4 space-y-3">
+                <h3 class="text-sm font-semibold text-gray-800">
+                    MCC / MNC Codes
+                </h3>
+
+                @php
+                    $mncs = $network->mncs ? $network->mncs->values() : collect();
+                    $maxRows = max($mncs->count() + 3, 3);
+                @endphp
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead>
+                            <tr class="border-b bg-gray-50">
+                                <th class="px-3 py-2 text-left font-semibold text-gray-700 whitespace-nowrap">#</th>
+                                <th class="px-3 py-2 text-left font-semibold text-gray-700 whitespace-nowrap">MCC (3 digits)</th>
+                                <th class="px-3 py-2 text-left font-semibold text-gray-700 whitespace-nowrap">MNC (2–3 digits)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for ($i = 0; $i < $maxRows; $i++)
+                                @php
+                                    $row = $mncs[$i] ?? null;
+                                    $oldMcc = old("mncs.$i.mcc", $row?->mcc);
+                                    $oldMnc = old("mncs.$i.mnc", $row?->mnc);
+                                @endphp
+                                <tr class="border-b last:border-0">
+                                    <td class="px-3 py-1.5 text-gray-500 align-middle">
+                                        {{ $i + 1 }}
+                                    </td>
+                                    <td class="px-3 py-1.5">
+                                        <input
+                                            type="text"
+                                            name="mncs[{{ $i }}][mcc]"
+                                            value="{{ $oldMcc }}"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                                            placeholder="e.g. 710"
+                                        >
+                                    </td>
+                                    <td class="px-3 py-1.5">
+                                        <input
+                                            type="text"
+                                            name="mncs[{{ $i }}][mnc]"
+                                            value="{{ $oldMnc }}"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                                            placeholder="e.g. 21"
+                                        >
+                                    </td>
+                                </tr>
+                            @endfor
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="text-xs text-gray-500 mt-1">
+                    Leave MCC/MNC rows empty to ignore them. Existing rows not present on save will be deleted.
+                </p>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <a
+                    href="{{ route('networks.index') }}"
+                    class="inline-flex items-center px-3 py-2 border border-gray-300 text-xs md:text-sm rounded-md shadow-sm bg-white text-gray-700 hover:bg-gray-50"
+                >
+                    Back to Networks
+                </a>
+
+                <button
+                    type="submit"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-xs md:text-sm font-semibold rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                    Save Network
+                </button>
+            </div>
+        </form>
+    </div>
+</x-app-layout>

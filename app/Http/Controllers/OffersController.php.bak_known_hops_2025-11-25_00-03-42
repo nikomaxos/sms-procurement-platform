@@ -1,0 +1,311 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\SupplierOffer;
+use App\Models\DropdownItem;
+use App\Models\Country;
+use App\Models\Network;
+use App\Models\NetworkMnc;
+use App\Models\Supplier;
+use App\Models\SupplierConnection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class OffersController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = SupplierOffer::query()
+            ->with(['country', 'network', 'networkMnc', 'supplier', 'connection'])
+            ->orderBy('country_id')
+            ->orderBy('network_id')
+            ->orderBy('supplier_id')
+            ->orderBy('price');
+
+        // Απλά φίλτρα (όσα υποστηρίζουμε προς το παρόν)
+        if ($request->filled('country_id')) {
+            $query->where('country_id', $request->input('country_id'));
+        }
+
+        if ($request->filled('network_id')) {
+            $query->where('network_id', $request->input('network_id'));
+        }
+
+        if ($request->filled('supplier_id')) {
+            $query->where('supplier_id', $request->input('supplier_id'));
+        }
+
+        if ($request->filled('supplier_connection_id')) {
+            $query->where('supplier_connection_id', $request->input('supplier_connection_id'));
+        }
+
+        if ($request->filled('is_exclusive')) {
+            $query->where('is_exclusive', (bool) $request->input('is_exclusive'));
+        }
+
+        if ($request->filled('product_type')) {
+            $query->where('product_type', $request->input('product_type'));
+        }
+
+        if ($request->filled('known_hops')) {
+            $query->where('known_hops', $request->input('known_hops'));
+        }
+
+        if ($request->filled('sender_id_supported')) {
+            $query->where('sender_id_supported', $request->input('sender_id_supported'));
+        }
+
+        $offers = $query->paginate(50)->withQueryString();
+
+        // Dropdown data
+        $countries   = Country::orderBy('name')->get();
+        $suppliers   = Supplier::orderBy('name')->get();
+        $networks    = Network::orderBy('name')->get();
+        $connections = SupplierConnection::orderBy('name')->get();
+
+        // Distinct values από τις ίδιες τις offers για filters
+        $productTypeFilterOptions = SupplierOffer::select('product_type')
+            ->whereNotNull('product_type')
+            ->distinct()
+            ->orderBy('product_type')
+            ->pluck('product_type');
+
+        $knownHopsFilterOptions = SupplierOffer::select('known_hops')
+            ->whereNotNull('known_hops')
+            ->distinct()
+            ->orderBy('known_hops')
+            ->pluck('known_hops');
+
+        $senderIdFilterOptions = SupplierOffer::select('sender_id_supported')
+            ->whereNotNull('sender_id_supported')
+            ->distinct()
+            ->orderBy('sender_id_supported')
+            ->pluck('sender_id_supported');
+
+        return view('offers.index', [
+            'offers'                  => $offers,
+            'countries'               => $countries,
+            'suppliers'               => $suppliers,
+            'networks'                => $networks,
+            'connections'             => $connections,
+            'productTypeFilterOptions'=> $productTypeFilterOptions,
+            'knownHopsFilterOptions'  => $knownHopsFilterOptions,
+            'senderIdFilterOptions'   => $senderIdFilterOptions,
+        ]);
+    }
+
+    public function create()
+    {
+        $countries   = Country::orderBy('name')->get();
+        $networks    = Network::orderBy('name')->get();
+        $suppliers   = Supplier::orderBy('name')->get();
+        $connections = SupplierConnection::orderBy('name')->get();
+
+        // Επιλογές από dropdown_items (menu_id: 1, 2, 3)
+        $productTypeOptions = DropdownItem::where('dropdown_menu_id', 1)
+            ->orderBy('label')
+            ->pluck('label', 'id');
+
+        $knownHopsOptions = DropdownItem::where('dropdown_menu_id', 2)
+            ->orderBy('label')
+            ->pluck('label', 'id');
+
+        $senderIdOptions = DropdownItem::where('dropdown_menu_id', 3)
+            ->orderBy('label')
+            ->pluck('label', 'id');
+
+        return view('offers.create', [
+            'countries'          => $countries,
+            'networks'           => $networks,
+            'suppliers'          => $suppliers,
+            'connections'        => $connections,
+            'productTypeOptions' => $productTypeOptions,
+            'knownHopsOptions'   => $knownHopsOptions,
+            'senderIdOptions'    => $senderIdOptions,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'country_id'              => 'required|exists:countries,id',
+            'network_id'              => 'required|exists:networks,id',
+            'network_mnc_id'          => 'required|exists:network_mncs,id',
+            'supplier_id'             => 'required|exists:suppliers,id',
+            'supplier_connection_id'  => 'required|exists:supplier_connections,id',
+            'price'                   => 'required|numeric|min:0',
+            'charge_type'             => 'required|string|max:50',
+            'effective_date'          => 'required|date',
+            'is_exclusive'            => 'nullable|boolean',
+            'product_type_dropdown_item_id'       => 'nullable|exists:dropdown_items,id',
+            'known_hops_dropdown_item_id'        => 'nullable|exists:dropdown_items,id',
+            'sender_id_supported_dropdown_item_id'=> 'nullable|exists:dropdown_items,id',
+        ]);
+
+        $networkMnc = NetworkMnc::findOrFail($data['network_mnc_id']);
+
+        $productTypeLabel = null;
+        if (!empty($data['product_type_dropdown_item_id'])) {
+            $productTypeLabel = DropdownItem::find($data['product_type_dropdown_item_id'])?->label;
+        }
+
+        $knownHopsLabel = null;
+        if (!empty($data['known_hops_dropdown_item_id'])) {
+            $knownHopsLabel = DropdownItem::find($data['known_hops_dropdown_item_id'])?->label;
+        }
+
+        $senderIdLabel = null;
+        if (!empty($data['sender_id_supported_dropdown_item_id'])) {
+            $senderIdLabel = DropdownItem::find($data['sender_id_supported_dropdown_item_id'])?->label;
+        }
+
+        DB::transaction(function () use ($data, $networkMnc, $productTypeLabel, $knownHopsLabel, $senderIdLabel) {
+            SupplierOffer::create([
+                'country_id'             => $data['country_id'],
+                'network_id'             => $data['network_id'],
+                'network_mnc_id'         => $data['network_mnc_id'],
+                'supplier_id'            => $data['supplier_id'],
+                'supplier_connection_id' => $data['supplier_connection_id'],
+                'price'                  => $data['price'],
+                'charge_type'            => $data['charge_type'],
+                'is_exclusive'           => !empty($data['is_exclusive']),
+                'effective_date'         => $data['effective_date'],
+                'mcc'                    => $networkMnc->mcc,
+                'mnc'                    => $networkMnc->mnc,
+                'mcc_mnc'                => $networkMnc->mcc_mnc,
+                'product_type'           => $productTypeLabel,
+                'known_hops'             => $knownHopsLabel,
+                'sender_id_supported'    => $senderIdLabel,
+            ]);
+        });
+
+        return redirect()
+            ->route('offers.index')
+            ->with('status', 'Offer created successfully.');
+    }
+
+    public function edit(SupplierOffer $offer)
+    {
+        $countries   = Country::orderBy('name')->get();
+        $networks    = Network::orderBy('name')->get();
+        $suppliers   = Supplier::orderBy('name')->get();
+        $connections = SupplierConnection::orderBy('name')->get();
+
+        $productTypeOptions = DropdownItem::where('dropdown_menu_id', 1)
+            ->orderBy('label')
+            ->pluck('label', 'id');
+
+        $knownHopsOptions = DropdownItem::where('dropdown_menu_id', 2)
+            ->orderBy('label')
+            ->pluck('label', 'id');
+
+        $senderIdOptions = DropdownItem::where('dropdown_menu_id', 3)
+            ->orderBy('label')
+            ->pluck('label', 'id');
+
+        // Βρίσκουμε ποιο dropdown_item αντιστοιχεί στο αποθηκευμένο label (αν υπάρχει)
+        $selectedProductTypeId = null;
+        if (!empty($offer->product_type)) {
+            $selectedProductTypeId = DropdownItem::where('dropdown_menu_id', 1)
+                ->where('label', $offer->product_type)
+                ->value('id');
+        }
+
+        $selectedKnownHopsId = null;
+        if (!empty($offer->known_hops)) {
+            $selectedKnownHopsId = DropdownItem::where('dropdown_menu_id', 2)
+                ->where('label', $offer->known_hops)
+                ->value('id');
+        }
+
+        $selectedSenderIdId = null;
+        if (!empty($offer->sender_id_supported)) {
+            $selectedSenderIdId = DropdownItem::where('dropdown_menu_id', 3)
+                ->where('label', $offer->sender_id_supported)
+                ->value('id');
+        }
+
+        return view('offers.edit', [
+            'offer'                 => $offer,
+            'countries'             => $countries,
+            'networks'              => $networks,
+            'suppliers'             => $suppliers,
+            'connections'           => $connections,
+            'productTypeOptions'    => $productTypeOptions,
+            'knownHopsOptions'      => $knownHopsOptions,
+            'senderIdOptions'       => $senderIdOptions,
+            'selectedProductTypeId' => $selectedProductTypeId,
+            'selectedKnownHopsId'   => $selectedKnownHopsId,
+            'selectedSenderIdId'    => $selectedSenderIdId,
+        ]);
+    }
+
+    public function update(Request $request, SupplierOffer $offer)
+    {
+        $data = $request->validate([
+            'country_id'              => 'required|exists:countries,id',
+            'network_id'              => 'required|exists:networks,id',
+            'network_mnc_id'          => 'required|exists:network_mncs,id',
+            'supplier_id'             => 'required|exists:suppliers,id',
+            'supplier_connection_id'  => 'required|exists:supplier_connections,id',
+            'price'                   => 'required|numeric|min:0',
+            'charge_type'             => 'required|string|max:50',
+            'effective_date'          => 'required|date',
+            'is_exclusive'            => 'nullable|boolean',
+            'product_type_dropdown_item_id'       => 'nullable|exists:dropdown_items,id',
+            'known_hops_dropdown_item_id'        => 'nullable|exists:dropdown_items,id',
+            'sender_id_supported_dropdown_item_id'=> 'nullable|exists:dropdown_items,id',
+        ]);
+
+        $networkMnc = NetworkMnc::findOrFail($data['network_mnc_id']);
+
+        $productTypeLabel = null;
+        if (!empty($data['product_type_dropdown_item_id'])) {
+            $productTypeLabel = DropdownItem::find($data['product_type_dropdown_item_id'])?->label;
+        }
+
+        $knownHopsLabel = null;
+        if (!empty($data['known_hops_dropdown_item_id'])) {
+            $knownHopsLabel = DropdownItem::find($data['known_hops_dropdown_item_id'])?->label;
+        }
+
+        $senderIdLabel = null;
+        if (!empty($data['sender_id_supported_dropdown_item_id'])) {
+            $senderIdLabel = DropdownItem::find($data['sender_id_supported_dropdown_item_id'])?->label;
+        }
+
+        DB::transaction(function () use ($offer, $data, $networkMnc, $productTypeLabel, $knownHopsLabel, $senderIdLabel) {
+            $offer->update([
+                'country_id'             => $data['country_id'],
+                'network_id'             => $data['network_id'],
+                'network_mnc_id'         => $data['network_mnc_id'],
+                'supplier_id'            => $data['supplier_id'],
+                'supplier_connection_id' => $data['supplier_connection_id'],
+                'price'                  => $data['price'],
+                'charge_type'            => $data['charge_type'],
+                'is_exclusive'           => !empty($data['is_exclusive']),
+                'effective_date'         => $data['effective_date'],
+                'mcc'                    => $networkMnc->mcc,
+                'mnc'                    => $networkMnc->mnc,
+                'mcc_mnc'                => $networkMnc->mcc_mnc,
+                'product_type'           => $productTypeLabel,
+                'known_hops'             => $knownHopsLabel,
+                'sender_id_supported'    => $senderIdLabel,
+            ]);
+        });
+
+        return redirect()
+            ->route('offers.index')
+            ->with('status', 'Offer updated successfully.');
+    }
+
+    public function destroy(SupplierOffer $offer)
+    {
+        $offer->delete();
+
+        return redirect()
+            ->route('offers.index')
+            ->with('status', 'Offer deleted successfully.');
+    }
+}

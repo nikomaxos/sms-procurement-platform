@@ -1,0 +1,1 @@
+echo == syntax check για OffersController... PHP syntax error - δες το backup στο .backups/remove_offer_history_hard_2025-11-24_16-24-24

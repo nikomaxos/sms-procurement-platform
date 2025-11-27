@@ -1,0 +1,1 @@
+echo == migrations for pgsql... php artisan migrate --force failed. Check the error above (DB connection or permissions).

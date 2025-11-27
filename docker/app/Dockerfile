@@ -19,3 +19,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY docker/app/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 CMD ["entrypoint.sh"]
+
+# Add Postgres client tools so version_snapshot.sh can run pg_dump from the app container
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-client \
+    && rm -rf /var/lib/apt/lists/*

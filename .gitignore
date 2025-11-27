@@ -22,3 +22,5 @@ database/migrations/_bak/
 /bootstrap/cache/*
 *.bak.*
 logs/
+/storage/app/db_dumps
+/storage/app/version_history
