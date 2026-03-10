@@ -38,12 +38,12 @@ class NetworksController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'       => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'country_id' => ['nullable', 'integer', 'exists:countries,id'],
         ]);
 
         $network = new Network();
-        $network->name       = $data['name'];
+        $network->name = $data['name'];
         $network->lower_name = Str::lower($data['name']);
         $network->country_id = $data['country_id'] ?? null;
         $network->save();
@@ -52,7 +52,7 @@ class NetworksController extends Controller
             if (!$network->meta) {
                 $network->meta()->create([
                     'non_operational' => false,
-                    'notes'           => null,
+                    'notes' => null,
                 ]);
             }
         }
@@ -76,7 +76,7 @@ class NetworksController extends Controller
         $countries = Country::orderBy('name')->get();
 
         return view('networks.edit', [
-            'network'   => $network,
+            'network' => $network,
             'countries' => $countries,
         ]);
     }
@@ -87,15 +87,16 @@ class NetworksController extends Controller
     public function update(Request $request, Network $network)
     {
         $data = $request->validate([
-            'name'       => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'country_id' => ['nullable', 'integer', 'exists:countries,id'],
-            'notes'      => ['nullable', 'string'],
-            'mncs'       => ['nullable', 'array'],
+            'notes' => ['nullable', 'string'],
+            'mncs' => ['nullable', 'array'],
             'mncs.*.mcc' => ['nullable', 'string'],
             'mncs.*.mnc' => ['nullable', 'string', 'regex:/^[0-9]{2,3}$/'],
+            'mncs.*.non_operational' => ['nullable', 'boolean'],
         ]);
 
-        $network->name       = $data['name'];
+        $network->name = $data['name'];
         $network->lower_name = Str::lower($data['name']);
         $network->country_id = $data['country_id'] ?? null;
         $network->save();
@@ -110,7 +111,7 @@ class NetworksController extends Controller
 
             if ($meta) {
                 $meta->non_operational = $request->boolean('non_operational');
-                $meta->notes            = $data['notes'] ?? null;
+                $meta->notes = $data['notes'] ?? null;
                 $meta->save();
             }
         }
@@ -122,6 +123,7 @@ class NetworksController extends Controller
         foreach ($mncsInput as $row) {
             $mcc = isset($row['mcc']) ? trim((string) $row['mcc']) : '';
             $mnc = isset($row['mnc']) ? trim((string) $row['mnc']) : '';
+            $nonOp = !empty($row['non_operational']);
 
             if ($mcc === '' && $mnc === '') {
                 continue;
@@ -133,6 +135,7 @@ class NetworksController extends Controller
             $clean[] = [
                 'mcc' => (int) $mcc,
                 'mnc' => (int) $mnc,
+                'non_operational' => $nonOp,
             ];
         }
 
@@ -142,8 +145,9 @@ class NetworksController extends Controller
             foreach ($clean as $pair) {
                 NetworkMnc::create([
                     'network_id' => $network->id,
-                    'mcc'        => $pair['mcc'],
-                    'mnc'        => $pair['mnc'],
+                    'mcc' => $pair['mcc'],
+                    'mnc' => $pair['mnc'],
+                    'non_operational' => $pair['non_operational'],
                 ]);
             }
         }

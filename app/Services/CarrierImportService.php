@@ -11,13 +11,17 @@ use App\Models\Network;
  * Imports MCC/MNCs from remote JSON with local fallback and
  * writes provenance (created_by_source / updated_by_source).
  */
-class CarrierImportService {
+class CarrierImportService
+{
 
     /**
      * @return array{ok:bool,msg:string,createdCountries:int,createdNetworks:int,createdMncs:int}
      */
-    public function import(string $source = 'itu', bool $fresh = false): array {
-        $createdCountries = 0; $createdNetworks = 0; $createdMncs = 0;
+    public function import(string $source = 'itu', bool $fresh = false): array
+    {
+        $createdCountries = 0;
+        $createdNetworks = 0;
+        $createdMncs = 0;
 
         if ($fresh) {
             DB::table('network_mncs')->truncate();
@@ -26,7 +30,7 @@ class CarrierImportService {
 
         // Determine provenance label
         $provenanceRemote = 'import:itu';
-        $provenanceLocal  = 'import:local';
+        $provenanceLocal = 'import:local';
 
         // Data sources
         $urls = [
@@ -53,13 +57,14 @@ class CarrierImportService {
         if (!$rows) {
             $path = base_path('resources/data/mcc-mnc-table.json');
             if (is_file($path)) {
-                $data = json_decode((string)file_get_contents($path), true);
-                if (is_array($data)) $rows = $data;
+                $data = json_decode((string) file_get_contents($path), true);
+                if (is_array($data))
+                    $rows = $data;
             }
         }
 
         if (!$rows) {
-            return ['ok'=>false,'msg'=>'No data fetched from any source','createdCountries'=>0,'createdNetworks'=>0,'createdMncs'=>0];
+            return ['ok' => false, 'msg' => 'No data fetched from any source', 'createdCountries' => 0, 'createdNetworks' => 0, 'createdMncs' => 0];
         }
 
         // Dedupe within the batch to avoid redundant upserts
@@ -70,11 +75,14 @@ class CarrierImportService {
             $hasLowerName = Schema::hasColumn('networks', 'lower_name');
 
             foreach ($rows as $r) {
-                $mcc = trim((string)($r['mcc'] ?? $r['MCC'] ?? ''));
-                $mnc = trim((string)($r['mnc'] ?? $r['MNC'] ?? ''));
-                $cname = trim((string)($r['country'] ?? $r['country_name'] ?? $r['countryName'] ?? ''));
-                $iso2  = strtolower(trim((string)($r['iso'] ?? $r['iso2'] ?? $r['country_code'] ?? '')));
-                $netName = trim((string)($r['brand'] ?? $r['operator'] ?? $r['network'] ?? ''));
+                $mcc = trim((string) ($r['mcc'] ?? $r['MCC'] ?? ''));
+                $mnc = trim((string) ($r['mnc'] ?? $r['MNC'] ?? ''));
+                $cname = trim((string) ($r['country'] ?? $r['country_name'] ?? $r['countryName'] ?? ''));
+                $iso2 = strtolower(trim((string) ($r['iso'] ?? $r['iso2'] ?? $r['country_code'] ?? '')));
+                if (strlen($iso2) !== 2 || !preg_match('/^[a-z]{2}$/', $iso2)) {
+                    $iso2 = 'zz';
+                }
+                $netName = trim((string) ($r['brand'] ?? $r['operator'] ?? $r['network'] ?? ''));
 
                 if ($mcc === '' || $mnc === '' || $cname === '' || $netName === '') {
                     continue;
@@ -105,7 +113,8 @@ class CarrierImportService {
 
                 if (!$network) {
                     $attrs = ['country_id' => $country->id, 'name' => $netName];
-                    if ($hasLowerName) $attrs['lower_name'] = $lower;
+                    if ($hasLowerName)
+                        $attrs['lower_name'] = $lower;
                     $network = Network::create($attrs);
                     $createdNetworks++;
                 } else {
@@ -120,25 +129,25 @@ class CarrierImportService {
                 $existsCountryMcc = DB::table('country_mccs')->where('mcc', $mccPad)->exists();
                 if ($existsCountryMcc) {
                     DB::table('country_mccs')
-                      ->where('mcc', $mccPad)
-                      ->update([
-                          'country_id'        => $country->id,
-                          'updated_by_source' => $provenance,
-                          'updated_at'        => now(),
-                      ]);
+                        ->where('mcc', $mccPad)
+                        ->update([
+                            'country_id' => $country->id,
+                            'updated_by_source' => $provenance,
+                            'updated_at' => now(),
+                        ]);
                 } else {
                     DB::table('country_mccs')->insert([
-                        'country_id'        => $country->id,
-                        'mcc'               => $mccPad,
+                        'country_id' => $country->id,
+                        'mcc' => $mccPad,
                         'created_by_source' => $provenance,
                         'updated_by_source' => $provenance,
-                        'created_at'        => now(),
-                        'updated_at'        => now(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
                     ]);
                 }
 
                 // network_mncs upsert (unique per (mcc,mnc))
-                $key = $mccPad.'-'.$mncPad;
+                $key = $mccPad . '-' . $mncPad;
                 if (isset($seenMccMnc[$key])) {
                     continue; // skip duplicates inside the same batch
                 }
@@ -152,21 +161,21 @@ class CarrierImportService {
                         ->where('mcc', $mccPad)
                         ->where('mnc', $mncPad)
                         ->update([
-                            'network_id'        => $network->id,
-                            'mcc_mnc'           => $mccMnc,
+                            'network_id' => $network->id,
+                            'mcc_mnc' => $mccMnc,
                             'updated_by_source' => $provenance,
-                            'updated_at'        => now(),
+                            'updated_at' => now(),
                         ]);
                 } else {
                     DB::table('network_mncs')->insert([
-                        'network_id'        => $network->id,
-                        'mcc'               => $mccPad,
-                        'mnc'               => $mncPad,
-                        'mcc_mnc'           => $mccMnc,
+                        'network_id' => $network->id,
+                        'mcc' => $mccPad,
+                        'mnc' => $mncPad,
+                        'mcc_mnc' => $mccMnc,
                         'created_by_source' => $provenance,
                         'updated_by_source' => $provenance,
-                        'created_at'        => now(),
-                        'updated_at'        => now(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
                     ]);
                     $createdMncs++;
                 }
@@ -177,8 +186,8 @@ class CarrierImportService {
             'ok' => true,
             'msg' => 'Import completed',
             'createdCountries' => $createdCountries,
-            'createdNetworks'  => $createdNetworks,
-            'createdMncs'      => $createdMncs,
+            'createdNetworks' => $createdNetworks,
+            'createdMncs' => $createdMncs,
         ];
     }
 }

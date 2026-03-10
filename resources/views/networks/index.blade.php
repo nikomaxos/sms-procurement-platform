@@ -48,6 +48,8 @@
 
         if ($countryId) {
             $query->where('networks.country_id', $countryId);
+        } elseif ($countryLabel !== '') {
+            $query->whereRaw('LOWER(c.name) LIKE ?', ['%' . strtolower($countryLabel) . '%']);
         }
 
         if ($nonOperational === '1') {
@@ -232,11 +234,13 @@
                                     ->values();
 
                                 $mncs = $network->mncs
-                                    ->pluck('mnc')
-                                    ->map(function ($val) {
-                                        return str_pad((string) $val, 2, '0', STR_PAD_LEFT);
+                                    ->map(function ($mnc) {
+                                        return [
+                                            'val' => str_pad((string) $mnc->mnc, 2, '0', STR_PAD_LEFT),
+                                            'non_operational' => (bool) $mnc->non_operational,
+                                        ];
                                     })
-                                    ->unique()
+                                    ->unique('val')
                                     ->values();
                             @endphp
                             <tr class="text-sm text-gray-700">
@@ -269,8 +273,8 @@
                                     <div class="flex flex-wrap gap-1">
                                         @forelse ($mncs as $mnc)
                                             <span
-                                                class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-800">
-                                                {{ $mnc }}
+                                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold {{ $mnc['non_operational'] ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800' }}">
+                                                {{ $mnc['val'] }}
                                             </span>
                                         @empty
                                             <span class="text-xs text-gray-400">—</span>

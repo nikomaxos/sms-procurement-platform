@@ -41,12 +41,9 @@
                         <label for="country_id" class="block text-sm font-medium text-gray-700">
                             Country
                         </label>
-                        <select
-                            id="country_id"
-                            name="country_id"
+                        <select id="country_id" name="country_id"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                            required
-                        >
+                            required>
                             @foreach ($countries as $country)
                                 <option value="{{ $country->id }}" @selected($country->id === $network->country_id)>
                                     {{ $country->name }} ({{ $country->iso2 }})
@@ -62,14 +59,9 @@
                         <label for="name" class="block text-sm font-medium text-gray-700">
                             Name
                         </label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            value="{{ old('name', $network->name) }}"
+                        <input type="text" id="name" name="name" value="{{ old('name', $network->name) }}"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                            required
-                        >
+                            required>
                         @error('name')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -82,14 +74,9 @@
                             Status
                         </label>
                         <div class="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                id="non_operational"
-                                name="non_operational"
-                                value="1"
+                            <input type="checkbox" id="non_operational" name="non_operational" value="1"
                                 class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                                @checked(optional($network->meta)->non_operational)
-                            >
+                                @checked(optional($network->meta)->non_operational)>
                             <label for="non_operational" class="text-sm text-gray-700">
                                 Mark as non-operational
                             </label>
@@ -100,13 +87,9 @@
                         <label for="notes" class="block text-sm font-medium text-gray-700">
                             Notes
                         </label>
-                        <textarea
-                            id="notes"
-                            name="notes"
-                            rows="4"
+                        <textarea id="notes" name="notes" rows="4"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                            placeholder="Internal notes about this network (e.g. outages, roaming only, special routing)..."
-                        >{{ old('notes', optional($network->meta)->notes) }}</textarea>
+                            placeholder="Internal notes about this network (e.g. outages, roaming only, special routing)...">{{ old('notes', optional($network->meta)->notes) }}</textarea>
                         @error('notes')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -118,11 +101,8 @@
                         <h3 class="text-lg font-semibold text-gray-900">
                             MCC / MNCs
                         </h3>
-                        <button
-                            type="button"
-                            id="add-mnc-row"
-                            class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                        >
+                        <button type="button" id="add-mnc-row"
+                            class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50">
                             + Add MCC/MNC
                         </button>
                     </div>
@@ -136,6 +116,7 @@
                                 $rows[] = [
                                     'mcc' => $row['mcc'] ?? '',
                                     'mnc' => $row['mnc'] ?? '',
+                                    'non_operational' => !empty($row['non_operational']),
                                 ];
                             }
                         } else {
@@ -143,6 +124,7 @@
                                 $rows[] = [
                                     'mcc' => str_pad((string) $mnc->mcc, 3, '0', STR_PAD_LEFT),
                                     'mnc' => str_pad((string) $mnc->mnc, 2, '0', STR_PAD_LEFT),
+                                    'non_operational' => (bool) $mnc->non_operational,
                                 ];
                             }
                         }
@@ -154,6 +136,7 @@
                                 <tr class="text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                     <th class="px-4 py-2">MCC (from country)</th>
                                     <th class="px-4 py-2">MNC</th>
+                                    <th class="px-4 py-2 text-center">Non-operational</th>
                                     <th class="px-4 py-2 w-24 text-right">Actions</th>
                                 </tr>
                             </thead>
@@ -161,33 +144,29 @@
                                 @forelse ($rows as $idx => $row)
                                     <tr data-row="1">
                                         <td class="px-4 py-2">
-                                            <input
-                                                type="text"
-                                                name="mncs[{{ $idx }}][mcc]"
+                                            <input type="text" name="mncs[{{ $idx }}][mcc]"
                                                 value="{{ $row['mcc'] !== '' ? $row['mcc'] : $defaultMcc }}"
                                                 class="mt-1 block w-full rounded-md border-gray-200 bg-gray-100 text-gray-600 shadow-sm text-xs font-mono"
-                                                readonly
-                                            >
+                                                readonly>
                                         </td>
                                         <td class="px-4 py-2">
-                                            <input
-                                                type="text"
-                                                name="mncs[{{ $idx }}][mnc]"
-                                                value="{{ $row['mnc'] }}"
+                                            <input type="text" name="mncs[{{ $idx }}][mnc]" value="{{ $row['mnc'] }}"
                                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-xs font-mono @if($hasMncError) border-red-300 @endif"
-                                                placeholder="MNC (2-3 digits)"
-                                            >
+                                                placeholder="MNC (2-3 digits)">
                                             @if ($hasMncError)
                                                 <p class="mt-1 text-xs text-red-600">
                                                     Each MNC must be 2 or 3 digits (0–9).
                                                 </p>
                                             @endif
                                         </td>
+                                        <td class="px-4 py-2 text-center">
+                                            <input type="checkbox" name="mncs[{{ $idx }}][non_operational]" value="1"
+                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                                @checked($row['non_operational'])>
+                                        </td>
                                         <td class="px-4 py-2 text-right">
-                                            <button
-                                                type="button"
-                                                class="js-remove-mnc-row inline-flex items-center rounded-md border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                                            >
+                                            <button type="button"
+                                                class="js-remove-mnc-row inline-flex items-center rounded-md border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50">
                                                 Remove
                                             </button>
                                         </td>
@@ -198,7 +177,8 @@
                         </table>
                     </div>
                     <p class="text-xs text-gray-500">
-                        MCC is taken from the linked country and is read-only. Removing a row will delete that MCC/MNC from this network when you save.
+                        MCC is taken from the linked country and is read-only. Removing a row will delete that MCC/MNC
+                        from this network when you save.
                     </p>
                     @if ($hasMncError)
                         <p class="text-xs text-red-600 mt-1">
@@ -208,38 +188,28 @@
                 </div>
 
                 <div class="mt-6 flex items-center justify-between gap-3">
-                    <a
-                        href="{{ route('networks.index') }}"
-                        class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                    >
+                    <a href="{{ route('networks.index') }}"
+                        class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
                         Back to list
                     </a>
 
                     <div class="flex items-center gap-3">
-                        <button
-                            type="button"
+                        <button type="button"
                             onclick="if (confirm('Are you sure you want to delete this network?')) { document.getElementById('delete-network-form-{{ $network->id }}').submit(); }"
-                            class="inline-flex items-center rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 shadow-sm hover:bg-red-50"
-                        >
+                            class="inline-flex items-center rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 shadow-sm hover:bg-red-50">
                             Delete
                         </button>
 
-                        <button
-                            type="submit"
-                            class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
+                        <button type="submit"
+                            class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                             Save
                         </button>
                     </div>
                 </div>
             </form>
 
-            <form
-                id="delete-network-form-{{ $network->id }}"
-                method="POST"
-                action="{{ route('networks.destroy', $network) }}"
-                class="hidden"
-            >
+            <form id="delete-network-form-{{ $network->id }}" method="POST"
+                action="{{ route('networks.destroy', $network) }}" class="hidden">
                 @csrf
                 @method('DELETE')
             </form>
@@ -252,32 +222,37 @@
             if (!tableBody) return;
 
             var addBtn = document.getElementById('add-mnc-row');
-            var rows   = tableBody.querySelectorAll('tr[data-row]');
-            var index  = rows.length;
+            var rows = tableBody.querySelectorAll('tr[data-row]');
+            var index = rows.length;
             var defaultMcc = @json($defaultMcc);
 
-            function addRow(mcc, mnc) {
+            function addRow(mcc, mnc, non_operational) {
                 if (!mcc) mcc = defaultMcc || '';
                 if (mnc === undefined) mnc = '';
+                var isChecked = non_operational ? 'checked' : '';
 
                 var tr = document.createElement('tr');
                 tr.setAttribute('data-row', '1');
 
                 tr.innerHTML =
                     '<td class="px-4 py-2">' +
-                        '<input type="text" name="mncs[' + index + '][mcc]" value="' + (mcc || '') + '"' +
-                        ' class="mt-1 block w-full rounded-md border-gray-200 bg-gray-100 text-gray-600 shadow-sm text-xs font-mono"' +
-                        ' readonly>' +
+                    '<input type="text" name="mncs[' + index + '][mcc]" value="' + (mcc || '') + '"' +
+                    ' class="mt-1 block w-full rounded-md border-gray-200 bg-gray-100 text-gray-600 shadow-sm text-xs font-mono"' +
+                    ' readonly>' +
                     '</td>' +
                     '<td class="px-4 py-2">' +
-                        '<input type="text" name="mncs[' + index + '][mnc]" value="' + (mnc || '') + '"' +
-                        ' class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-xs font-mono"' +
-                        ' placeholder="MNC (2-3 digits)">' +
+                    '<input type="text" name="mncs[' + index + '][mnc]" value="' + (mnc || '') + '"' +
+                    ' class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-xs font-mono"' +
+                    ' placeholder="MNC (2-3 digits)">' +
+                    '</td>' +
+                    '<td class="px-4 py-2 text-center">' +
+                    '<input type="checkbox" name="mncs[' + index + '][non_operational]" value="1"' +
+                    ' class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" ' + isChecked + '>' +
                     '</td>' +
                     '<td class="px-4 py-2 text-right">' +
-                        '<button type="button" class="js-remove-mnc-row inline-flex items-center rounded-md border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50">' +
-                            'Remove' +
-                        '</button>' +
+                    '<button type="button" class="js-remove-mnc-row inline-flex items-center rounded-md border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50">' +
+                    'Remove' +
+                    '</button>' +
                     '</td>';
 
                 tableBody.appendChild(tr);
@@ -285,12 +260,12 @@
             }
 
             if (!tableBody.querySelector('tr[data-row]')) {
-                addRow(defaultMcc, '');
+                addRow(defaultMcc, '', false);
             }
 
             if (addBtn) {
                 addBtn.addEventListener('click', function () {
-                    addRow(defaultMcc, '');
+                    addRow(defaultMcc, '', false);
                 });
             }
 

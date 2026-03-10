@@ -15,6 +15,7 @@ class NetworkMnc extends Model
         'mcc',
         'mnc',
         'mcc_mnc',
+        'non_operational',
         'marked_for_deletion',
         'created_by_user_id',
         'updated_by_user_id',
@@ -23,6 +24,7 @@ class NetworkMnc extends Model
     ];
 
     protected $casts = [
+        'non_operational' => 'bool',
         'marked_for_deletion' => 'bool',
     ];
 
@@ -59,7 +61,7 @@ class NetworkMnc extends Model
 
             // Build raw 6-digit MCCMNC from padded parts (3+3)
             $raw = str_pad($mccDigits, 3, '0', STR_PAD_LEFT)
-                 . str_pad($mncDigits, 3, '0', STR_PAD_LEFT);
+                . str_pad($mncDigits, 3, '0', STR_PAD_LEFT);
 
             $normalized = $raw;
 

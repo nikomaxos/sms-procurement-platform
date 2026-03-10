@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DropdownMenu extends Model
 {
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'module'];
 
-    public function items(): HasMany {
+    public function items(): HasMany
+    {
         return $this->hasMany(DropdownItem::class);
     }
 }

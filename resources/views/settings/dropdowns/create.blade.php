@@ -9,11 +9,23 @@
         @csrf
         <div>
           <label class="block text-sm font-medium text-gray-700">Title</label>
-          <input name="title" value="{{ old('title') }}" class="mt-1 w-full rounded border px-3 py-2" required maxlength="120">
+          <input name="title" value="{{ old('title') }}" class="mt-1 w-full rounded border px-3 py-2" required
+            maxlength="120">
           @error('title')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
         </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Module (Optional)</label>
+          <select name="module" class="mt-1 w-full rounded border px-3 py-2 bg-white">
+            <option value="">-- None --</option>
+            @foreach($modules as $key => $label)
+              <option value="{{ $key }}" @selected(old('module') == $key)>{{ $label }}</option>
+            @endforeach
+          </select>
+          @error('module')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
+        </div>
         <div class="flex items-center gap-2">
-          <a href="{{ route('settings.dropdowns.index') }}" class="rounded border px-4 py-2 text-gray-700 hover:bg-gray-50">Cancel</a>
+          <a href="{{ route('settings.dropdowns.index') }}"
+            class="rounded border px-4 py-2 text-gray-700 hover:bg-gray-50">Cancel</a>
           <button class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Create</button>
         </div>
       </form>
