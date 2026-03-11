@@ -9,7 +9,7 @@ services:
     volumes:
       - dbdata_rescue2:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U app -d app -h localhost"]
+      test: [ "CMD-SHELL", "pg_isready -U app -d app -h localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -34,6 +34,8 @@ services:
     volumes:
       - ./:/var/www/html
       - ./.env:/var/www/html/.env:ro
+      - ./docker/php/opcache.ini:/usr/local/etc/php/conf.d/opcache-custom.ini:ro
+      - vendor_data:/var/www/html/vendor
 
   web:
     image: nginx:1.27-alpine
@@ -49,3 +51,4 @@ services:
 volumes:
   dbdata_rescue2:
     name: sms-procurement-platform_dbdata_rescue2
+  vendor_data:

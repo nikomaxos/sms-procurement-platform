@@ -3,7 +3,7 @@ FROM php:8.3-fpm-bookworm
 # system deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git unzip libpq-dev libzip-dev ca-certificates \
- && docker-php-ext-install pdo_pgsql zip \
+ && docker-php-ext-install pdo_pgsql zip opcache \
  && rm -rf /var/lib/apt/lists/*
 
 # composer

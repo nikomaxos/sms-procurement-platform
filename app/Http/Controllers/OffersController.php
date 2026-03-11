@@ -27,6 +27,7 @@ class OffersController extends Controller
                 'knownHopsDropdown',
                 'senderIdSupportedDropdown',
                 'updater',
+                'histories',
             ]);
 
         if ($request->filled('country_id')) {
@@ -69,9 +70,9 @@ class OffersController extends Controller
             ->paginate(50)
             ->appends($request->query());
 
-        $countries   = Country::orderBy('name')->get();
-        $networks    = Network::orderBy('name')->get();
-        $suppliers   = Supplier::orderBy('name')->get();
+        $countries = Country::orderBy('name')->get();
+        $networks = Network::orderBy('name')->get();
+        $suppliers = Supplier::orderBy('name')->get();
         $connections = SupplierConnection::orderBy('name')->get();
 
         $productTypeFilterOptions = SupplierOffer::query()
@@ -96,29 +97,29 @@ class OffersController extends Controller
             ->pluck('charge_type');
 
         return view('offers.index', [
-            'offers'                   => $offers,
-            'countries'                => $countries,
-            'networks'                 => $networks,
-            'suppliers'                => $suppliers,
-            'connections'              => $connections,
+            'offers' => $offers,
+            'countries' => $countries,
+            'networks' => $networks,
+            'suppliers' => $suppliers,
+            'connections' => $connections,
             'productTypeFilterOptions' => $productTypeFilterOptions,
-            'knownHopsFilterOptions'   => $knownHopsFilterOptions,
-            'senderIdFilterOptions'    => $senderIdFilterOptions,
-            'chargeTypeFilterOptions'  => $chargeTypeFilterOptions,
+            'knownHopsFilterOptions' => $knownHopsFilterOptions,
+            'senderIdFilterOptions' => $senderIdFilterOptions,
+            'chargeTypeFilterOptions' => $chargeTypeFilterOptions,
         ]);
     }
 
     public function edit(SupplierOffer $offer)
     {
-        $countries   = Country::orderBy('name')->get();
-        $suppliers   = Supplier::orderBy('name')->get();
-        $networks    = Network::orderBy('name')->get();
+        $countries = Country::orderBy('name')->get();
+        $suppliers = Supplier::orderBy('name')->get();
+        $networks = Network::orderBy('name')->get();
         $connections = SupplierConnection::orderBy('name')->get();
         $networkMncs = NetworkMnc::orderBy('mcc_mnc')->get();
 
         $productTypeOptions = DropdownItem::where('dropdown_menu_id', 1)->orderBy('label')->get();
-        $knownHopsOptions   = DropdownItem::where('dropdown_menu_id', 2)->orderBy('label')->get();
-        $senderIdOptions    = DropdownItem::where('dropdown_menu_id', 3)->get();
+        $knownHopsOptions = DropdownItem::where('dropdown_menu_id', 2)->orderBy('label')->get();
+        $senderIdOptions = DropdownItem::where('dropdown_menu_id', 3)->get();
 
         $chargeTypeOptions = SupplierConnection::query()
             ->select('charge_type')
@@ -148,23 +149,23 @@ class OffersController extends Controller
             }
         }
 
-        $selectedKnownHopsId         = $offer->known_hops_dropdown_item_id;
+        $selectedKnownHopsId = $offer->known_hops_dropdown_item_id;
         $selectedSenderIdSupportedId = $offer->sender_id_supported_dropdown_item_id;
 
         return view('offers.edit', [
-            'offer'                       => $offer,
-            'countries'                   => $countries,
-            'suppliers'                   => $suppliers,
-            'networks'                    => $networks,
-            'connections'                 => $connections,
-            'networkMncs'                 => $networkMncs,
-            'networkMncSummary'           => $networkMncSummary,
-            'productTypeOptions'          => $productTypeOptions,
-            'knownHopsOptions'            => $knownHopsOptions,
-            'senderIdOptions'             => $senderIdOptions,
-            'chargeTypeOptions'           => $chargeTypeOptions,
-            'selectedProductTypeId'       => $selectedProductTypeId,
-            'selectedKnownHopsId'         => $selectedKnownHopsId,
+            'offer' => $offer,
+            'countries' => $countries,
+            'suppliers' => $suppliers,
+            'networks' => $networks,
+            'connections' => $connections,
+            'networkMncs' => $networkMncs,
+            'networkMncSummary' => $networkMncSummary,
+            'productTypeOptions' => $productTypeOptions,
+            'knownHopsOptions' => $knownHopsOptions,
+            'senderIdOptions' => $senderIdOptions,
+            'chargeTypeOptions' => $chargeTypeOptions,
+            'selectedProductTypeId' => $selectedProductTypeId,
+            'selectedKnownHopsId' => $selectedKnownHopsId,
             'selectedSenderIdSupportedId' => $selectedSenderIdSupportedId,
         ]);
     }
@@ -174,23 +175,23 @@ class OffersController extends Controller
         $this->ensureNetworkMncForRequest($request);
 
         $validated = $request->validate([
-            'country_id'                          => ['required', 'integer', 'exists:countries,id'],
-            'network_id'                          => ['required', 'integer', 'exists:networks,id'],
-            'network_mnc_id'                      => ['nullable', 'integer', 'exists:network_mncs,id'],
-            'supplier_id'                         => ['required', 'integer', 'exists:suppliers,id'],
-            'supplier_connection_id'              => ['nullable', 'integer', 'exists:supplier_connections,id'],
-            'price'                               => ['required', 'numeric', 'min:0'],
-            'mcc'                                 => ['nullable', 'string', 'max:4'],
-            'mnc'                                 => ['nullable', 'string', 'max:4'],
-            'mcc_mnc'                             => ['nullable', 'string', 'max:8'],
-            'product_type_id'                     => ['nullable', 'integer', 'exists:dropdown_items,id'],
-            'known_hops_dropdown_item_id'         => ['nullable', 'integer', 'exists:dropdown_items,id'],
-            'sender_id_supported_dropdown_item_id'=> ['nullable', 'integer', 'exists:dropdown_items,id'],
-            'route_type_id'                       => ['nullable', 'integer'],
-            'charge_model_id'                     => ['nullable', 'integer'],
-            'charge_type'                         => ['nullable', 'string', 'max:50'],
-            'is_exclusive'                        => ['nullable', 'boolean'],
-            'effective_date'                      => ['nullable', 'date'],
+            'country_id' => ['required', 'integer', 'exists:countries,id'],
+            'network_id' => ['required', 'integer', 'exists:networks,id'],
+            'network_mnc_id' => ['nullable', 'integer', 'exists:network_mncs,id'],
+            'supplier_id' => ['required', 'integer', 'exists:suppliers,id'],
+            'supplier_connection_id' => ['nullable', 'integer', 'exists:supplier_connections,id'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'mcc' => ['nullable', 'string', 'max:4'],
+            'mnc' => ['nullable', 'string', 'max:4'],
+            'mcc_mnc' => ['nullable', 'string', 'max:8'],
+            'product_type_id' => ['nullable', 'integer', 'exists:dropdown_items,id'],
+            'known_hops_dropdown_item_id' => ['nullable', 'integer', 'exists:dropdown_items,id'],
+            'sender_id_supported_dropdown_item_id' => ['nullable', 'integer', 'exists:dropdown_items,id'],
+            'route_type_id' => ['nullable', 'integer'],
+            'charge_model_id' => ['nullable', 'integer'],
+            'charge_type' => ['nullable', 'string', 'max:50'],
+            'is_exclusive' => ['nullable', 'boolean'],
+            'effective_date' => ['nullable', 'date'],
         ]);
 
         $validated['is_exclusive'] = $request->boolean('is_exclusive');
@@ -233,18 +234,18 @@ class OffersController extends Controller
     {
         $offer = new SupplierOffer();
 
-        $countries   = Country::orderBy('name')->get();
-        $suppliers   = Supplier::orderBy('name')->get();
-        $networks    = Network::orderBy('name')->get();
+        $countries = Country::orderBy('name')->get();
+        $suppliers = Supplier::orderBy('name')->get();
+        $networks = Network::orderBy('name')->get();
         $connections = SupplierConnection::orderBy('name')->get();
         $networkMncs = NetworkMnc::orderBy('mcc_mnc')->get();
 
         $productTypeOptions = DropdownItem::where('dropdown_menu_id', 1)->orderBy('label')->get();
-        $knownHopsOptions   = DropdownItem::where('dropdown_menu_id', 2)->orderBy('label')->get();
-        $senderIdOptions    = DropdownItem::where('dropdown_menu_id', 3)->get();
+        $knownHopsOptions = DropdownItem::where('dropdown_menu_id', 2)->orderBy('label')->get();
+        $senderIdOptions = DropdownItem::where('dropdown_menu_id', 3)->get();
 
-        $selectedProductTypeId       = null;
-        $selectedKnownHopsId         = null;
+        $selectedProductTypeId = null;
+        $selectedKnownHopsId = null;
         $selectedSenderIdSupportedId = null;
 
         return view('offers.edit', compact(
@@ -268,20 +269,20 @@ class OffersController extends Controller
         $this->ensureNetworkMncForRequest($request);
 
         $validated = $request->validate([
-            'country_id'                          => ['required', 'integer'],
-            'network_id'                          => ['required', 'integer'],
-            'network_mnc_id'                      => ['nullable', 'integer'],
-            'supplier_id'                         => ['required', 'integer'],
-            'supplier_connection_id'              => ['required', 'integer'],
-            'price'                               => ['required'],
-            'product_type_id'                     => ['nullable', 'integer'],
-            'known_hops_dropdown_item_id'         => ['nullable', 'integer'],
-            'sender_id_supported_dropdown_item_id'=> ['nullable', 'integer'],
-            'route_type_id'                       => ['nullable', 'integer'],
-            'charge_model_id'                     => ['nullable', 'integer'],
-            'charge_type'                         => ['nullable', 'string', 'max:255'],
-            'is_exclusive'                        => ['nullable', 'boolean'],
-            'effective_date'                      => ['nullable', 'date'],
+            'country_id' => ['required', 'integer'],
+            'network_id' => ['required', 'integer'],
+            'network_mnc_id' => ['nullable', 'integer'],
+            'supplier_id' => ['required', 'integer'],
+            'supplier_connection_id' => ['required', 'integer'],
+            'price' => ['required'],
+            'product_type_id' => ['nullable', 'integer'],
+            'known_hops_dropdown_item_id' => ['nullable', 'integer'],
+            'sender_id_supported_dropdown_item_id' => ['nullable', 'integer'],
+            'route_type_id' => ['nullable', 'integer'],
+            'charge_model_id' => ['nullable', 'integer'],
+            'charge_type' => ['nullable', 'string', 'max:255'],
+            'is_exclusive' => ['nullable', 'boolean'],
+            'effective_date' => ['nullable', 'date'],
         ]);
 
         if (isset($validated['price'])) {
@@ -293,27 +294,37 @@ class OffersController extends Controller
             $validated['price'] = $priceStr;
         }
 
-        $offer = new SupplierOffer();
-
-        foreach ($validated as $key => $value) {
-            $offer->{$key} = $value;
-        }
+        $matchCriteria = [
+            'supplier_id' => $validated['supplier_id'],
+            'supplier_connection_id' => $validated['supplier_connection_id'],
+            'country_id' => $validated['country_id'],
+            'network_id' => $validated['network_id'],
+            'network_mnc_id' => $validated['network_mnc_id'] ?? null,
+            'product_type_id' => $validated['product_type_id'] ?? null,
+            'route_type_id' => $validated['route_type_id'] ?? null,
+        ];
 
         if (!empty($validated['product_type_id'])) {
             $item = DropdownItem::find($validated['product_type_id']);
             if ($item) {
-                $offer->product_type = $item->label;
+                $validated['product_type'] = $item->label;
             }
         }
 
-        // ποιος το δημιούργησε (για το Edited By)
-        $offer->updated_by = optional($request->user())->id;
+        $validated['updated_by'] = optional($request->user())->id;
 
-        $offer->save();
+        $offer = SupplierOffer::where($matchCriteria)->first();
+        if ($offer) {
+            $offer->update($validated);
+            $msg = 'Offer updated successfully.';
+        } else {
+            $offer = SupplierOffer::create($validated);
+            $msg = 'Offer created successfully.';
+        }
 
         return redirect()
             ->route('offers.edit', $offer)
-            ->with('status', 'Offer created successfully.');
+            ->with('status', $msg);
     }
 
     public function networkMncsJson($network)
@@ -331,10 +342,10 @@ class OffersController extends Controller
     public function connectionDefaultsJson($connection)
     {
         $defaults = [
-            'product_type_id'    => null,
+            'product_type_id' => null,
             'product_type_label' => null,
-            'charge_type'        => null,
-            'username'           => null,
+            'charge_type' => null,
+            'username' => null,
         ];
 
         $conn = SupplierConnection::find($connection);

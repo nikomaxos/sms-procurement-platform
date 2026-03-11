@@ -35,7 +35,7 @@ class SupplierOffer extends Model
     ];
 
     protected $casts = [
-        'is_exclusive'   => 'boolean',
+        'is_exclusive' => 'boolean',
         'effective_date' => 'datetime',
     ];
 
@@ -63,12 +63,41 @@ class SupplierOffer extends Model
             $builder->where(function (Builder $query) use ($prefix) {
                 // 1) supplier_offers.mcc_mnc starts with
                 $query->whereRaw('LOWER(mcc_mnc) LIKE ?', [$prefix])
-                      // 2) OR network_mncs.mcc_mnc starts with (μέσω σχέσης)
-                      ->orWhereHas('networkMnc', function (Builder $q) use ($prefix) {
-                          $q->whereRaw('LOWER(mcc_mnc) LIKE ?', [$prefix]);
-                      });
+                    // 2) OR network_mncs.mcc_mnc starts with (μέσω σχέσης)
+                    ->orWhereHas('networkMnc', function (Builder $q) use ($prefix) {
+                        $q->whereRaw('LOWER(mcc_mnc) LIKE ?', [$prefix]);
+                    });
             });
         });
+
+        static::updating(function ($offer) {
+            if ($offer->isDirty('price')) {
+                SupplierOfferHistory::create([
+                    'supplier_offer_id' => $offer->id,
+                    'supplier_id' => $offer->getOriginal('supplier_id'),
+                    'supplier_connection_id' => $offer->getOriginal('supplier_connection_id'),
+                    'country_id' => $offer->getOriginal('country_id'),
+                    'network_id' => $offer->getOriginal('network_id'),
+                    'network_mnc_id' => $offer->getOriginal('network_mnc_id'),
+                    'price' => $offer->getOriginal('price'),
+                    'mcc' => $offer->getOriginal('mcc'),
+                    'mnc' => $offer->getOriginal('mnc'),
+                    'mcc_mnc' => $offer->getOriginal('mcc_mnc'),
+                    'product_type' => $offer->getOriginal('product_type'),
+                    'known_hops' => $offer->knownHopsDropdownItem ? $offer->knownHopsDropdownItem->label : null,
+                    'sender_id_supported' => $offer->senderIdSupportedDropdownItem ? $offer->senderIdSupportedDropdownItem->label : null,
+                    'charge_type' => $offer->getOriginal('charge_type'),
+                    'is_exclusive' => $offer->getOriginal('is_exclusive'),
+                    'route_type' => $offer->getOriginal('route_type_id'),
+                    'effective_date' => $offer->getOriginal('effective_date'),
+                ]);
+            }
+        });
+    }
+
+    public function histories()
+    {
+        return $this->hasMany(SupplierOfferHistory::class, 'supplier_offer_id')->orderBy('created_at', 'desc');
     }
 
     /** Country */
